@@ -7,7 +7,7 @@ interface ComingSoonProps {
 
 export function ComingSoon({ title, description }: ComingSoonProps) {
   return (
-    <div className="mx-auto max-w-[680px] px-8 py-16">
+    <div className="px-10 py-16">
       <div className="flex flex-col items-center justify-center text-center rounded-2xl border border-dashed border-border p-16">
         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-100 mb-4">
           <Construction className="h-6 w-6 text-primary" />
