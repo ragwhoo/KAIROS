@@ -1,0 +1,291 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: #000000; color: #ffffff; min-height: 100vh; }
+  
+  .container { max-width: 680px; margin: 0 auto; padding: 32px 24px; }
+  
+  /* ===== HEADER ===== */
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; }
+  .greeting { font-size: 40px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
+  .greeting span { color: #ffffff; }
+  .sub-greeting { font-size: 15px; color: #666; font-weight: 400; margin-top: 4px; }
+  .avatar-ring { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #7D39EB, #C6FF33); padding: 2px; }
+  .avatar { width: 100%; height: 100%; border-radius: 50%; background: #121212; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 16px; color: #fff; }
+  
+  /* ===== STATS ROW ===== */
+  .stats { display: flex; gap: 8px; margin-bottom: 32px; }
+  .stat { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 16px; backdrop-filter: blur(8px); }
+  .stat-label { font-size: 11px; color: #666; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-value { font-size: 24px; font-weight: 700; margin-top: 4px; }
+  .stat-value.violet { color: #7D39EB; }
+  .stat-value.lime { color: #C6FF33; }
+  
+  /* ===== SECTION HEADER ===== */
+  .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .section-title { font-size: 18px; font-weight: 600; }
+  .section-action { font-size: 13px; color: #7D39EB; font-weight: 500; cursor: default; }
+  
+  /* ===== TASK CARDS ===== */
+  .task { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 16px; margin-bottom: 10px; transition: all 0.2s ease; cursor: default; }
+  .task:hover { border-color: rgba(125,57,235,0.3); background: rgba(125,57,235,0.06); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(125,57,235,0.12); }
+  
+  .task-row { display: flex; gap: 12px; align-items: flex-start; }
+  .check { width: 22px; height: 22px; border-radius: 8px; border: 2px solid rgba(255,255,255,0.2); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+  .check.done { background: #C6FF33; border-color: #C6FF33; }
+  .check.done::after { content: '✓'; color: #000; font-size: 13px; font-weight: 700; }
+  
+  .task-body { flex: 1; min-width: 0; }
+  .task-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .task-title.done { text-decoration: line-through; color: rgba(255,255,255,0.3); }
+  .task-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  
+  .tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+  .tag.focus { background: rgba(125,57,235,0.15); color: #7D39EB; }
+  .tag.lime { background: rgba(198,255,51,0.12); color: #C6FF33; }
+  .tag.caution { background: rgba(255,159,10,0.12); color: #ff9f0a; }
+  .tag.urgent { background: rgba(255,59,92,0.12); color: #ff3b5c; }
+  .tag.subject { background: rgba(255,255,255,0.06); color: #999; }
+  
+  .task-meta { display: flex; gap: 16px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.04); }
+  .task-meta span { font-size: 12px; color: #666; display: flex; align-items: center; gap: 4px; }
+  
+  .progress { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+  .progress-bar { height: 100%; border-radius: 2px; background: linear-gradient(90deg, #7D39EB, #C6FF33); transition: width 0.4s ease; }
+  .progress-bar.urgent { background: #ff3b5c; }
+  .progress-bar.lime { background: #C6FF33; }
+  
+  /* ===== ADD TASK ===== */
+  .add-task { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border: 1px dashed rgba(255,255,255,0.1); border-radius: 14px; color: #666; font-size: 14px; font-weight: 500; cursor: default; transition: all 0.2s ease; }
+  .add-task:hover { border-color: #7D39EB; color: #7D39EB; background: rgba(125,57,235,0.04); }
+  
+  /* ===== GLASS PANEL ===== */
+  .glass-panel { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 24px; backdrop-filter: blur(20px); margin-bottom: 24px; }
+  
+  .glass-title { font-size: 20px; font-weight: 600; margin-bottom: 2px; }
+  .glass-sub { font-size: 14px; color: #666; margin-bottom: 16px; }
+  
+  .insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .insight { padding: 14px; background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px solid rgba(255,255,255,0.04); }
+  .insight-label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+  .insight-value { font-size: 20px; font-weight: 700; margin-top: 4px; }
+  .insight-value.lime { color: #C6FF33; }
+  
+  /* ===== AI WIDGET ===== */
+  .ai-widget { background: linear-gradient(135deg, rgba(125,57,235,0.12), rgba(198,255,51,0.06)); border: 1px solid rgba(125,57,235,0.2); border-radius: 20px; padding: 20px; margin-bottom: 24px; position: relative; overflow: hidden; }
+  .ai-widget::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 50%, rgba(125,57,235,0.1), transparent 70%); pointer-events: none; }
+  
+  .ai-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .ai-icon { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, #7D39EB, #C6FF33); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .ai-name { font-size: 14px; font-weight: 600; color: #7D39EB; }
+  .ai-dot { width: 5px; height: 5px; border-radius: 50%; background: #C6FF33; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  
+  .ai-text { font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 14px; }
+  .ai-actions { display: flex; gap: 8px; }
+  .ai-btn { padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; background: rgba(125,57,235,0.2); color: #7D39EB; border: 1px solid rgba(125,57,235,0.15); cursor: default; transition: all 0.2s ease; }
+  .ai-btn:hover { background: rgba(125,57,235,0.3); }
+  
+  /* ===== CTA BUTTON ===== */
+  .cta-row { display: flex; gap: 8px; margin-bottom: 32px; }
+  .cta { flex: 1; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 600; text-align: center; cursor: default; transition: all 0.2s ease; }
+  .cta.primary { background: linear-gradient(135deg, #7D39EB, #6951e3); color: #fff; border: none; }
+  .cta.primary:hover { box-shadow: 0 0 24px rgba(125,57,235,0.3); transform: translateY(-1px); }
+  .cta.secondary { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+  .cta.secondary:hover { background: rgba(255,255,255,0.1); }
+  .cta.gamified { background: linear-gradient(135deg, #C6FF33, #a8e00f); color: #000; border: none; }
+  .cta.gamified:hover { box-shadow: 0 0 24px rgba(198,255,51,0.3); transform: translateY(-1px); }
+  
+  /* ===== ACHIEVEMENT BAR ===== */
+  .xp-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .xp-track { flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+  .xp-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #7D39EB, #C6FF33); width: 72%; }
+  .xp-text { font-size: 13px; font-weight: 600; color: #C6FF33; white-space: nowrap; }
+  .level-badge { display: flex; align-items: center; gap: 6px; padding: 4px 12px 4px 4px; border-radius: 999px; background: rgba(125,57,235,0.15); border: 1px solid rgba(125,57,235,0.2); }
+  .level-num { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #7D39EB, #C6FF33); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #000; }
+  .level-name { font-size: 12px; font-weight: 600; color: #7D39EB; }
+</style>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <div class="greeting">Good <span style="background:linear-gradient(135deg,#7D39EB,#C6FF33);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Evening</span></div>
+      <div class="sub-greeting">Thursday, 16 July · 3 tasks remaining</div>
+    </div>
+    <div class="avatar-ring">
+      <div class="avatar">R</div>
+    </div>
+  </div>
+
+  <!-- XP BAR -->
+  <div class="xp-bar">
+    <div class="level-badge">
+      <div class="level-num">7</div>
+      <span class="level-name">Scholar</span>
+    </div>
+    <div class="xp-track">
+      <div class="xp-fill"></div>
+    </div>
+    <div class="xp-text">1,240 / 2,000 XP</div>
+  </div>
+
+  <!-- AI WIDGET -->
+  <div class="ai-widget">
+    <div class="ai-header">
+      <div class="ai-icon">✦</div>
+      <div class="ai-name">Kairos AI</div>
+      <div class="ai-dot"></div>
+    </div>
+    <div class="ai-text">You have an DBMS exam in 6 days. I've prepared a revision plan covering all 4 modules. Want me to schedule it?</div>
+    <div class="ai-actions">
+      <div class="ai-btn">Review Plan</div>
+      <div class="ai-btn">Schedule It</div>
+      <div class="ai-btn" style="background:rgba(198,255,51,0.15);color:#C6FF33;border-color:rgba(198,255,51,0.2);">Remind Later</div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Completed</div>
+      <div class="stat-value" style="color:#fff;">4</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Study Hours</div>
+      <div class="stat-value" style="color:#fff;">2.5</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">XP Today</div>
+      <div class="stat-value lime">+340</div>
+    </div>
+  </div>
+
+  <!-- CTA ROW -->
+  <div class="cta-row">
+    <div class="cta primary">View Today</div>
+    <div class="cta gamified">+ Quick Task</div>
+    <div class="cta secondary">Overview</div>
+  </div>
+
+  <!-- GLASS PANEL: INSIGHTS -->
+  <div class="glass-panel">
+    <div class="glass-title">This Week</div>
+    <div class="glass-sub">You're on a 4-day streak. Keep going!</div>
+    <div class="insight-grid">
+      <div class="insight">
+        <div class="insight-label">Tasks Done</div>
+        <div class="insight-value" style="color:#fff;">18</div>
+      </div>
+      <div class="insight">
+        <div class="insight-label">Study Hours</div>
+        <div class="insight-value" style="color:#fff;">12.5</div>
+      </div>
+      <div class="insight">
+        <div class="insight-label">Streak</div>
+        <div class="insight-value lime">4 days</div>
+      </div>
+      <div class="insight">
+        <div class="insight-label">Consistency</div>
+        <div class="insight-value" style="color:#7D39EB;">82%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASKS HEADER -->
+  <div class="section-header">
+    <div class="section-title">Today's Tasks</div>
+    <div class="section-action">View All</div>
+  </div>
+
+  <!-- TASK: Focus -->
+  <div class="task">
+    <div class="task-row">
+      <div class="check"></div>
+      <div class="task-body">
+        <div class="task-title">Finish DBMS Assignment</div>
+        <div class="task-tags">
+          <span class="tag focus">● Focus</span>
+          <span class="tag subject">DBMS</span>
+        </div>
+        <div class="task-meta">
+          <span>📎 2 files</span>
+          <span>⏱ 45m est.</span>
+          <span style="color:#ff9f0a;">Due tomorrow</span>
+        </div>
+        <div class="progress">
+          <div class="progress-bar" style="width:65%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK: Done -->
+  <div class="task" style="opacity:0.7;">
+    <div class="task-row">
+      <div class="check done"></div>
+      <div class="task-body">
+        <div class="task-title done">Review Math Notes</div>
+        <div class="task-tags">
+          <span class="tag lime">● Done</span>
+          <span class="tag subject">Mathematics</span>
+        </div>
+        <div class="task-meta">
+          <span style="color:#C6FF33;">⭐ +25 XP</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK: Caution -->
+  <div class="task">
+    <div class="task-row">
+      <div class="check"></div>
+      <div class="task-body">
+        <div class="task-title">Submit Lab Report</div>
+        <div class="task-tags">
+          <span class="tag caution">● Caution</span>
+          <span class="tag subject">Physics</span>
+        </div>
+        <div class="task-meta">
+          <span>📎 1 file</span>
+          <span>⏱ 20m est.</span>
+          <span style="color:#ff9f0a;">Due in 3h</span>
+        </div>
+        <div class="progress">
+          <div class="progress-bar" style="width:40%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK: Urgent -->
+  <div class="task" style="border-color:rgba(255,59,92,0.2);">
+    <div class="task-row">
+      <div class="check"></div>
+      <div class="task-body">
+        <div class="task-title">Pay Library Fine</div>
+        <div class="task-tags">
+          <span class="tag urgent">● Urgent</span>
+        </div>
+        <div class="task-meta">
+          <span style="color:#ff3b5c;">⚠ Overdue by 2 days</span>
+        </div>
+        <div class="progress">
+          <div class="progress-bar urgent" style="width:25%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD TASK -->
+  <div class="add-task">
+    <span style="font-size:20px;font-weight:300;color:#7D39EB;">+</span>
+    <span>Add a new task...</span>
+  </div>
+
+  <!-- SPACING -->
+  <div style="height:40px;"></div>
+
+</div>

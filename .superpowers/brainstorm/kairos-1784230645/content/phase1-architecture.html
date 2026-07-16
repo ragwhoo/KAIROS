@@ -1,0 +1,53 @@
+<h2>Phase 1 &mdash; Architecture Overview</h2>
+<p class="subtitle">Next.js with API Routes on Vercel. Clean separation in code, single deployable.</p>
+
+<div class="cards" style="margin-top:16px;">
+  <div class="card" style="background:#f8fafc;">
+    <h3>Frontend Layer</h3>
+    <p>Next.js App Router pages &amp; components. Tailwind + shadcn/ui. Framer Motion for animations.</p>
+  </div>
+  <div class="card" style="background:#f8fafc;">
+    <h3>API Layer</h3>
+    <p>Next.js Route Handlers. Clean service/repository pattern. Prisma ORM for database access.</p>
+  </div>
+  <div class="card" style="background:#f8fafc;">
+    <h3>Shared Layer</h3>
+    <p>Common types, validation schemas (Zod), utilities. Imported by both frontend and API layers.</p>
+  </div>
+</div>
+
+<h3 style="margin-top:24px;">Suggested Folder Structure</h3>
+<div class="mock-content" style="font-family:monospace;font-size:13px;line-height:1.8;background:#1e293b;color:#e2e8f0;padding:16px;border-radius:12px;">
+kairos/
+├── app/                    # Next.js App Router pages
+│   ├── (dashboard)/        # Dashboard layout group
+│   │   ├── today/
+│   │   ├── overview/
+│   │   ├── calendar/
+│   │   └── tasks/
+│   ├── api/                # Route handlers
+│   │   ├── tasks/
+│   │   ├── notes/
+│   │   └── subjects/
+│   └── layout.tsx
+├── components/             # Reusable UI components
+│   ├── ui/                 # shadcn/ui primitives
+│   └── features/           # Feature-specific components
+├── features/               # Feature modules (isolated)
+│   ├── calendar/
+│   ├── tasks/
+│   ├── notes/
+│   └── ai/
+├── hooks/                  # Shared hooks
+├── lib/                    # Utilities &amp; config
+├── services/               # API service clients
+├── styles/                 # Global styles &amp; tokens
+├── types/                  # Shared TypeScript types
+├── database/               # Prisma schema &amp; migrations
+├── store/                  # Zustand stores
+└── prisma/                 # Prisma config
+</div>
+
+<div class="section" style="margin-top:16px;">
+<p style="font-weight:500;">See anything you'd change in the folder structure before we detail the design system?</p>
+</div>

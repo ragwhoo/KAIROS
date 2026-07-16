@@ -1,0 +1,189 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 4px; }
+  .subtitle { color: #5b5b66; margin-bottom: 24px; font-size: 15px; }
+  
+  .section { margin-bottom: 36px; }
+  .section-title { font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #e5e5e7; }
+  
+  .swatch-grid { display: grid; gap: 8px; }
+  .swatch-grid.three { grid-template-columns: repeat(3, 1fr); }
+  .swatch-grid.four { grid-template-columns: repeat(4, 1fr); }
+  .swatch-grid.scale { grid-template-columns: repeat(6, 1fr); }
+  
+  .swatch { border-radius: 12px; padding: 16px; }
+  .swatch .name { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 4px; }
+  .swatch .hex { font-size: 13px; font-weight: 500; }
+  .swatch .usage { font-size: 11px; margin-top: 4px; opacity: 0.65; }
+  
+  .relationship { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #fff; border-radius: 12px; border: 1px solid #e5e5e7; margin-bottom: 8px; }
+  .dot { width: 24px; height: 24px; border-radius: 6px; flex-shrink: 0; }
+  .relationship-text { font-size: 14px; color: #333; }
+  .relationship-text strong { color: #000; }
+  
+  .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .comparison-card { border-radius: 16px; padding: 20px; border: 1px solid #e5e5e7; }
+  .comparison-card.bad { background: #fff; }
+  .comparison-card.good { background: #f0f7ff; border-color: #0071e3; }
+  .comparison-card h4 { font-size: 15px; margin-bottom: 8px; }
+  .comparison-card .desc { font-size: 13px; color: #5b5b66; line-height: 1.5; }
+</style>
+
+<h2>Color Palette</h2>
+<p class="subtitle">Every color has a job. They work as a system, not a collection.</p>
+
+<!-- NEUTRALS -->
+<div class="section">
+  <div class="section-title">Neutrals &mdash; The Foundation</div>
+  <p style="font-size:14px;color:#5b5b66;margin-bottom:16px;">Cool-leaning grays. The background is #f5f5f7 (soft, airy). Cards are #ffffff (crisp, clean). Text is #000000 only at the top level; everything beneath uses progressively lighter grays for hierarchy.</p>
+  
+  <div class="swatch-grid scale">
+    <div class="swatch" style="background:#f5f5f7;border:1px solid #e5e5e7;">
+      <div class="name" style="color:#333;">Page BG</div>
+      <div class="hex" style="color:#333;">#f5f5f7</div>
+      <div class="usage" style="color:#666;">Page background</div>
+    </div>
+    <div class="swatch" style="background:#ffffff;border:1px solid #e5e5e7;">
+      <div class="name" style="color:#333;">Card</div>
+      <div class="hex" style="color:#333;">#ffffff</div>
+      <div class="usage" style="color:#666;">Cards, sheets, panels</div>
+    </div>
+    <div class="swatch" style="background:#e5e5e7;">
+      <div class="name" style="color:#333;">Border</div>
+      <div class="hex" style="color:#333;">#e5e5e7</div>
+      <div class="usage" style="color:#555;">Dividers, strokes</div>
+    </div>
+    <div class="swatch" style="background:#8e8e93;">
+      <div class="name" style="color:#fff;">Tertiary</div>
+      <div class="hex" style="color:#fff;">#8e8e93</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Placeholder, disabled</div>
+    </div>
+    <div class="swatch" style="background:#5b5b66;">
+      <div class="name" style="color:#fff;">Secondary</div>
+      <div class="hex" style="color:#fff;">#5b5b66</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Body text, labels</div>
+    </div>
+    <div class="swatch" style="background:#000000;">
+      <div class="name" style="color:#fff;">Primary</div>
+      <div class="hex" style="color:#fff;">#000000</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Headings, titles</div>
+    </div>
+  </div>
+  
+  <div style="margin-top:12px;display:flex;gap:16px;align-items:center;padding:12px 16px;background:#fff;border-radius:12px;border:1px solid #e5e5e7;">
+    <div style="flex:1;">
+      <p style="font-size:14px;font-weight:600;color:#000;">Text Hierarchy in Practice</p>
+      <p style="font-size:11px;color:#8e8e93;">56px title &rarr; 28px heading &rarr; 16px body &rarr; 13px caption</p>
+    </div>
+    <div style="text-align:right;">
+      <p style="font-size:20px;font-weight:700;color:#000;">#000</p>
+      <p style="font-size:15px;color:#5b5b66;">#5b5b66</p>
+      <p style="font-size:12px;color:#8e8e93;">#8e8e93</p>
+    </div>
+  </div>
+</div>
+
+<!-- ACCENT -->
+<div class="section">
+  <div class="section-title">Accent &mdash; The Voice</div>
+  <p style="font-size:14px;color:#5b5b66;margin-bottom:16px;">#0071e3 is an assertive but calming blue. It's the same blue Apple uses &mdash; familiar, trusted, premium. It sits at 60&deg; on the hue wheel, directly complementary to the amber warning.</p>
+  
+  <div class="swatch-grid four">
+    <div class="swatch" style="background:#e8f4fd;">
+      <div class="name" style="color:#005bbf;">50</div>
+      <div class="hex" style="color:#005bbf;">#e8f4fd</div>
+      <div class="usage" style="color:#005bbf;">Selected bg</div>
+    </div>
+    <div class="swatch" style="background:#c7e5fb;">
+      <div class="name" style="color:#005bbf;">100</div>
+      <div class="hex" style="color:#005bbf;">#c7e5fb</div>
+      <div class="usage" style="color:#005bbf;">Hover surface</div>
+    </div>
+    <div class="swatch" style="background:#0071e3;">
+      <div class="name" style="color:#fff;">500</div>
+      <div class="hex" style="color:#fff;">#0071e3</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Primary accent</div>
+    </div>
+    <div class="swatch" style="background:#005bbf;">
+      <div class="name" style="color:#fff;">600</div>
+      <div class="hex" style="color:#fff;">#005bbf</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Hover / Active</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEMANTIC SYSTEM -->
+<div class="section">
+  <div class="section-title">Semantic Colors &mdash; The Signals</div>
+  <p style="font-size:14px;color:#5b5b66;margin-bottom:16px;">Designed as a <strong>unified temperature system</strong>. Blue (cool, focus) &rarr; Green (balanced, complete) &rarr; Amber (warm, caution) &rarr; Red (hot, urgent). They form a natural spectrum, not a random color pick.</p>
+
+  <div class="swatch-grid four">
+    <div class="swatch" style="background:#0071e3;">
+      <div class="name" style="color:#fff;">Focus</div>
+      <div class="hex" style="color:#fff;">#0071e3</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Actions, links, active</div>
+    </div>
+    <div class="swatch" style="background:#34c759;">
+      <div class="name" style="color:#fff;">Complete</div>
+      <div class="hex" style="color:#fff;">#34c759</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Done, success, streaks</div>
+    </div>
+    <div class="swatch" style="background:#ff9f0a;">
+      <div class="name" style="color:#fff;">Caution</div>
+      <div class="hex" style="color:#fff;">#ff9f0a</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Warning, medium priority</div>
+    </div>
+    <div class="swatch" style="background:#ff3b30;">
+      <div class="name" style="color:#fff;">Urgent</div>
+      <div class="hex" style="color:#fff;">#ff3b30</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Danger, overdue, delete</div>
+    </div>
+  </div>
+  
+  <p style="font-size:14px;color:#5b5b66;margin-top:16px;"><strong>How they relate:</strong> These sit at ~60&deg; (blue), ~140&deg; (green), ~40&deg; (amber), ~0&deg; (red) on the hue wheel &mdash; a logical clockwise sweep from cool to warm. No clashing, no random picks.</p>
+</div>
+
+<!-- DARK MODE -->
+<div class="section">
+  <div class="section-title">Dark Mode</div>
+  <p style="font-size:14px;color:#5b5b66;margin-bottom:16px;">Inverted carefully. Dark surfaces use desaturated tones so content pops. The accent shifts to #0a84ff (brighter) to maintain contrast against dark backgrounds.</p>
+  
+  <div class="swatch-grid four">
+    <div class="swatch" style="background:#1c1c1e;">
+      <div class="name" style="color:#fff;">Page BG</div>
+      <div class="hex" style="color:#fff;">#1c1c1e</div>
+    </div>
+    <div class="swatch" style="background:#2c2c2e;">
+      <div class="name" style="color:#fff;">Card</div>
+      <div class="hex" style="color:#fff;">#2c2c2e</div>
+    </div>
+    <div class="swatch" style="background:#0a84ff;">
+      <div class="name" style="color:#fff;">Accent</div>
+      <div class="hex" style="color:#fff;">#0a84ff</div>
+    </div>
+    <div class="swatch" style="background:#f5f5f7;">
+      <div class="name" style="color:#000;">Text</div>
+      <div class="hex" style="color:#000;">#f5f5f7</div>
+    </div>
+  </div>
+</div>
+
+<!-- BEFORE / AFTER -->
+<div class="section">
+  <div class="section-title">Why This Works</div>
+  
+  <div class="comparison">
+    <div class="comparison-card bad">
+      <h4 style="color:#8e8e93;">Generic Palette</h4>
+      <div class="desc">Random hex values pulled from different systems. Blue here, orange there. Text gray is too light to read. No hierarchy, no relationship.</div>
+    </div>
+    <div class="comparison-card good">
+      <h4 style="color:#0071e3;">Kairos Palette</h4>
+      <div class="desc">All neutrals are cool-leaning with consistent undertone. Accent has full shade range for states. Semantic colors form a temperature spectrum. Text is pure black at top with clear gray steps.</div>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top:16px;font-size:15px;font-weight:500;">Does this palette feel cohesive? Any adjustments?</p>

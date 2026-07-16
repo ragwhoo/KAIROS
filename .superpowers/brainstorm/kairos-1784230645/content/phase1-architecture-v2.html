@@ -1,0 +1,57 @@
+<h2>Phase 1 &mdash; Architecture Overview</h2>
+<p class="subtitle">Next.js with API Routes on Vercel. Clean separation in code, single deployable.</p>
+
+<div class="cards" style="margin-top:16px;">
+  <div class="card" onclick="toggleSelect(this)" data-choice="yes">
+    <div class="card-body">
+      <h3>Frontend Layer</h3>
+      <p>Next.js App Router pages &amp; components. Tailwind + shadcn/ui. Framer Motion for animations.</p>
+    </div>
+  </div>
+  <div class="card" onclick="toggleSelect(this)" data-choice="yes">
+    <div class="card-body">
+      <h3>API Layer</h3>
+      <p>Next.js Route Handlers. Clean service/repository pattern. Prisma ORM for database access.</p>
+    </div>
+  </div>
+  <div class="card" onclick="toggleSelect(this)" data-choice="yes">
+    <div class="card-body">
+      <h3>Shared Layer</h3>
+      <p>Common types, validation schemas (Zod), utilities. Imported by both frontend and API layers.</p>
+    </div>
+  </div>
+</div>
+
+<h3 style="margin-top:24px;">Suggested Folder Structure</h3>
+<div class="mockup" style="margin-top:8px;">
+  <div class="mockup-body" style="font-family:monospace;font-size:13px;line-height:1.8;background:#1e293b;color:#e2e8f0;border-radius:8px;">
+kairos/<br>
+├── app/<span style="color:#6b7280;"> &nbsp;# Next.js App Router pages</span><br>
+│&nbsp;&nbsp; ├── (dashboard)/<br>
+│&nbsp;&nbsp; │&nbsp;&nbsp; ├── today/<br>
+│&nbsp;&nbsp; │&nbsp;&nbsp; ├── overview/<br>
+│&nbsp;&nbsp; │&nbsp;&nbsp; ├── calendar/<br>
+│&nbsp;&nbsp; │&nbsp;&nbsp; └── tasks/<br>
+│&nbsp;&nbsp; ├── api/<br>
+│&nbsp;&nbsp; │&nbsp;&nbsp; ├── tasks/<br>
+│&nbsp;&nbsp; │&nbsp;&nbsp; ├── notes/<br>
+│&nbsp;&nbsp; │&nbsp;&nbsp; └── subjects/<br>
+│&nbsp;&nbsp; └── layout.tsx<br>
+├── components/<br>
+│&nbsp;&nbsp; ├── ui/<span style="color:#6b7280;"> &nbsp;# shadcn/ui primitives</span><br>
+│&nbsp;&nbsp; └── features/<br>
+├── features/<span style="color:#6b7280;"> &nbsp;# Isolated feature modules</span><br>
+├── hooks/<br>
+├── lib/<br>
+├── services/<span style="color:#6b7280;"> &nbsp;# API client calls</span><br>
+├── styles/<br>
+├── types/<br>
+├── store/<span style="color:#6b7280;"> &nbsp;# Zustand</span><br>
+├── database/<br>
+└── prisma/<br>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px;">
+  <p style="font-weight:500;color:var(--text-primary);">Does this folder structure look right? Click a card to select it, then reply in the terminal.</p>
+</div>

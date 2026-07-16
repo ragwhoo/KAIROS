@@ -1,0 +1,150 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 4px; }
+  .subtitle { color: #5b5b66; margin-bottom: 24px; font-size: 15px; }
+  .section { margin-bottom: 36px; }
+  .section-title { font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #e5e5e7; }
+  
+  .row { display: flex; gap: 12px; margin-bottom: 16px; }
+  .swatch { flex: 1; border-radius: 14px; padding: 16px; min-height: 100px; }
+  .swatch .name { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 4px; }
+  .swatch .hex { font-size: 13px; font-weight: 500; }
+  .swatch .usage { font-size: 11px; margin-top: 4px; opacity: 0.7; line-height: 1.4; }
+  
+  .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .palette-card { background: #fff; border-radius: 16px; padding: 20px; border: 1px solid #e5e5e7; }
+  .palette-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+  .mini-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+  .mini-dot { width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0; }
+  .mini-label { font-size: 13px; color: #333; }
+  .critique { font-size: 12px; color: #8e8e93; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+  
+  .swatch-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  
+  .scene-preview { background: #f5f5f7; border-radius: 16px; padding: 20px; margin-top: 16px; }
+  .task-item { display: flex; gap: 12px; align-items: center; padding: 12px; background: #fff; border-radius: 12px; margin-bottom: 8px; border: 1px solid #e5e5e7; }
+  .priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .task-text { font-size: 14px; color: #000; flex: 1; }
+  .task-meta { font-size: 12px; color: #8e8e93; }
+</style>
+
+<h2>Unified Color Palette</h2>
+<p class="subtitle">All colors now share the same DNA — consistent saturation, temperature, and weight.</p>
+
+<!-- THE PROBLEM -->
+<div class="section">
+  <div class="section-title">Before: No Relationship</div>
+  
+  <div class="row">
+    <div class="swatch" style="background:#0071e3;">
+      <div class="name" style="color:#fff;">Focus</div>
+      <div class="hex" style="color:#fff;">#0071e3</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Saturation: 80%<br>Cool</div>
+    </div>
+    <div class="swatch" style="background:#34c759;">
+      <div class="name" style="color:#fff;">Complete</div>
+      <div class="hex" style="color:#fff;">#34c759</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Saturation: 75%<br>Pure green — different family</div>
+    </div>
+    <div class="swatch" style="background:#ff9f0a;">
+      <div class="name" style="color:#fff;">Caution</div>
+      <div class="hex" style="color:#fff;">#ff9f0a</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Saturation: 95%<br>Very warm, very loud</div>
+    </div>
+    <div class="swatch" style="background:#ff3b30;">
+      <div class="name" style="color:#fff;">Urgent</div>
+      <div class="hex" style="color:#fff;">#ff3b30</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Saturation: 100%<br>Maximum intensity — overwhelms</div>
+    </div>
+  </div>
+  <p style="font-size:14px;color:#5b5b66;margin-top:4px;">Problem: Each color lives in its own world. Different saturation, different temperature, different perceived weight. The amber at 95% saturation screams next to the blue at 80%.</p>
+</div>
+
+<!-- THE SOLUTION -->
+<div class="section">
+  <div class="section-title">After: One Family</div>
+  <p style="font-size:14px;color:#5b5b66;margin-bottom:16px;">All semantic colors now sit at <strong>~72% saturation, consistent lightness</strong>. They form a temperature spectrum (cool → warm) without any single color dominating. The greens are teal-leaning (adjacent to blue), the warm colors are muted (flatter, more premium).</p>
+
+  <div class="row">
+    <div class="swatch" style="background:#0071e3;">
+      <div class="name" style="color:#fff;">Focus</div>
+      <div class="hex" style="color:#fff;">#0071e3</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Hue: 210&deg;<br>Saturation: 72%</div>
+    </div>
+    <div class="swatch" style="background:#0d9488;">
+      <div class="name" style="color:#fff;">Complete</div>
+      <div class="hex" style="color:#fff;">#0d9488</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Hue: 175&deg;<br>Saturation: 72%<br>Sits adjacent to blue</div>
+    </div>
+    <div class="swatch" style="background:#b58a1a;">
+      <div class="name" style="color:#fff;">Caution</div>
+      <div class="hex" style="color:#fff;">#b58a1a</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Hue: 45&deg;<br>Saturation: 68%<br>Muted gold — not loud</div>
+    </div>
+    <div class="swatch" style="background:#c2413a;">
+      <div class="name" style="color:#fff;">Urgent</div>
+      <div class="hex" style="color:#fff;">#c2413a</div>
+      <div class="usage" style="color:rgba(255,255,255,0.7);">Hue: 5&deg;<br>Saturation: 65%<br>Deep, restrained red</div>
+    </div>
+  </div>
+
+  <div style="margin-top:8px;display:flex;gap:12px;">
+    <div style="flex:1;height:6px;background:linear-gradient(90deg, #0071e3, #0d9488, #b58a1a, #c2413a);border-radius:3px;"></div>
+  </div>
+  <p style="font-size:13px;color:#8e8e93;margin-top:4px;">The gradient above shows the smooth temperature sweep: 210&deg; &rarr; 175&deg; &rarr; 45&deg; &rarr; 5&deg; on the hue wheel. No gaps, no jumps.</p>
+</div>
+
+<!-- SIDE BY SIDE -->
+<div class="section">
+  <div class="section-title">Side by Side</div>
+
+  <div class="palette-card" style="margin-bottom:16px;">
+    <h3 style="color:#8e8e93;">Before: Rainbow Picker</h3>
+    <div class="mini-row"><div class="mini-dot" style="background:#0071e3;"></div><span class="mini-label">Focus: #0071e3</span><span class="critique">— starting point, fine</span></div>
+    <div class="mini-row"><div class="mini-dot" style="background:#34c759;"></div><span class="mini-label">Complete: #34c759</span><span class="critique">— green from a different system</span></div>
+    <div class="mini-row"><div class="mini-dot" style="background:#ff9f0a;"></div><span class="mini-label">Caution: #ff9f0a</span><span class="critique">— 95% saturation, screams</span></div>
+    <div class="mini-row"><div class="mini-dot" style="background:#ff3b30;"></div><span class="mini-label">Urgent: #ff3b30</span><span class="critique">— 100% saturation, dominates</span></div>
+  </div>
+
+  <div class="palette-card" style="border-color:#0071e3;background:#f8fbff;">
+    <h3 style="color:#0071e3;">After: One Family</h3>
+    <div class="mini-row"><div class="mini-dot" style="background:#0071e3;"></div><span class="mini-label">Focus: #0071e3</span><span class="critique" style="color:#34c759;">— retained as anchor</span></div>
+    <div class="mini-row"><div class="mini-dot" style="background:#0d9488;"></div><span class="mini-label">Complete: #0d9488</span><span class="critique" style="color:#34c759;">— teal-green, adjacent to blue (175&deg;)</span></div>
+    <div class="mini-row"><div class="mini-dot" style="background:#b58a1a;"></div><span class="mini-label">Caution: #b58a1a</span><span class="critique" style="color:#34c759;">— muted gold, 68% sat (controlled)</span></div>
+    <div class="mini-row"><div class="mini-dot" style="background:#c2413a;"></div><span class="mini-label">Urgent: #c2413a</span><span class="critique" style="color:#34c759;">— deep red, 65% sat (restrained)</span></div>
+  </div>
+</div>
+
+<!-- IN CONTEXT -->
+<div class="section">
+  <div class="section-title">In Context: Today's Tasks</div>
+  
+  <div class="scene-preview">
+    <div class="task-item" style="border-left:3px solid #0071e3;border-radius:12px;">
+      <div class="priority-dot" style="background:#0071e3;"></div>
+      <div class="task-text">Finish DBMS Assignment</div>
+      <div class="task-meta">Focus</div>
+    </div>
+    <div class="task-item" style="border-left:3px solid #0d9488;border-radius:12px;">
+      <div class="priority-dot" style="background:#0d9488;"></div>
+      <div class="task-text">Review Math Notes</div>
+      <div class="task-meta">Complete</div>
+    </div>
+    <div class="task-item" style="border-left:3px solid #b58a1a;border-radius:12px;">
+      <div class="priority-dot" style="background:#b58a1a;"></div>
+      <div class="task-text">Submit Lab Report</div>
+      <div class="task-meta">Caution</div>
+    </div>
+    <div class="task-item" style="border-left:3px solid #c2413a;border-radius:12px;">
+      <div class="priority-dot" style="background:#c2413a;"></div>
+      <div class="task-text">Pay Library Fine</div>
+      <div class="task-meta">Urgent</div>
+    </div>
+  </div>
+  <p style="font-size:13px;color:#8e8e93;margin-top:8px;">Notice how no single task color dominates. The palette guides the eye without shouting.</p>
+</div>
+
+<p style="margin-top:16px;font-size:15px;font-weight:500;">Does this unified palette feel right? Any color you'd adjust?</p>

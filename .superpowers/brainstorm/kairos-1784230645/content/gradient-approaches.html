@@ -1,0 +1,162 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 4px; }
+  .subtitle { color: #5b5b66; margin-bottom: 24px; font-size: 15px; }
+  .section { margin-bottom: 36px; }
+  .section-title { font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #e5e5e7; }
+  
+  .approach-group { display: flex; gap: 16px; margin-bottom: 24px; }
+  .approach-card { flex: 1; background: #fff; border-radius: 16px; padding: 20px; border: 1px solid #e5e5e7; cursor: pointer; transition: all 0.15s ease; }
+  .approach-card:hover { border-color: #0071e3; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+  .approach-card h4 { font-size: 15px; margin-bottom: 6px; }
+  .approach-card p { font-size: 13px; color: #5b5b66; line-height: 1.5; }
+  
+  .gradient-bar { height: 8px; border-radius: 4px; margin: 6px 0; }
+  .demo-btn { display: inline-block; padding: 10px 24px; border-radius: 12px; color: white; font-size: 14px; font-weight: 600; border: none; margin: 4px; }
+  .demo-card { padding: 20px; border-radius: 16px; margin: 8px 0; }
+  .demo-card h4 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  .demo-card p { font-size: 14px; line-height: 1.4; }
+  .xp-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; border-radius: 999px; font-size: 13px; font-weight: 600; color: white; }
+  
+  .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .scene { background: #f5f5f7; border-radius: 16px; padding: 24px; }
+  .scene-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #8e8e93; margin-bottom: 16px; font-weight: 600; }
+  .hello-text { font-size: 42px; font-weight: 700; line-height: 1.1; margin-bottom: 16px; }
+</style>
+
+<h2>Gradient Directions</h2>
+<p class="subtitle">Where gradient elevates the experience vs. where flat is better.</p>
+
+<!-- APPROACHES -->
+<div class="section">
+  <div class="section-title">Three Gradient Approaches</div>
+  
+  <div class="approach-group">
+    <div class="approach-card" onclick="toggleSelect(this)" data-choice="accent-only">
+      <h4>A. Accent-Only Gradient</h4>
+      <p>Only gradient on primary accent elements (buttons, active states, progress bars). Everything else stays flat. Most restrained Apple-like approach.</p>
+      <div class="gradient-bar" style="background:linear-gradient(135deg, #0071e3, #6951e3);"></div>
+    </div>
+    <div class="approach-card" onclick="toggleSelect(this)" data-choice="full">
+      <h4>B. Full Gradient Identity</h4>
+      <p>Gradient on accent + backgrounds + gamification elements. Page BG has subtle gradient. Cards use gradient accents. XP &amp; levels are gradient-driven.</p>
+      <div class="gradient-bar" style="background:linear-gradient(135deg, #0071e3, #6951e3);"></div>
+      <div class="gradient-bar" style="background:linear-gradient(135deg, #f5f5f7, #eeeff7);"></div>
+    </div>
+    <div class="approach-card" onclick="toggleSelect(this)" data-choice="glass">
+      <h4>C. Glass + Gradient</h4>
+      <p>Gradients paired with glassmorphism. Cards have subtle frosted-glass backgrounds with gradient borders. Feels modern but risks feeling heavy.</p>
+      <div class="gradient-bar" style="background:linear-gradient(135deg, rgba(0,113,227,0.3), rgba(105,81,227,0.3));"></div>
+    </div>
+  </div>
+</div>
+
+<!-- A: ACCENT-ONLY GRADIENT -->
+<div class="section">
+  <div class="section-title">Approach A: Accent-Only Gradient (Recommended)</div>
+  <p style="font-size:14px;color:#5b5b66;margin-bottom:16px;">Gradient only on the accent. Everything else stays flat. This is what Apple would do — restraint makes the gradient feel special.</p>
+  
+  <div class="comparison-grid">
+    <!-- Flat scene -->
+    <div class="scene">
+      <div class="scene-label">Flat (Before)</div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <span class="demo-btn" style="background:#0071e3;">Create Task</span>
+        <span class="demo-btn" style="background:#e5e5e7;color:#333;">Cancel</span>
+      </div>
+      <div class="demo-card" style="background:#fff;border:1px solid #e5e5e7;">
+        <h4 style="color:#000;">Finish DBMS Project</h4>
+        <p style="color:#5b5b66;">Due tomorrow</p>
+        <div style="height:6px;background:#e5e5e7;border-radius:3px;margin-top:12px;">
+          <div style="width:65%;height:100%;background:#0071e3;border-radius:3px;"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <span class="xp-badge" style="background:#0071e3;">+50 XP</span>
+        <span style="padding:6px 16px;border-radius:999px;font-size:13px;font-weight:500;color:#5b5b66;background:#e5e5e7;">Level 3</span>
+      </div>
+    </div>
+    
+    <!-- Gradient scene -->
+    <div class="scene">
+      <div class="scene-label">Gradient Accent-Only (After)</div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <span class="demo-btn" style="background:linear-gradient(135deg, #0071e3, #6951e3);">Create Task</span>
+        <span class="demo-btn" style="background:#e5e5e7;color:#333;">Cancel</span>
+      </div>
+      <div class="demo-card" style="background:#fff;border:1px solid #e5e5e7;">
+        <h4 style="color:#000;">Finish DBMS Project</h4>
+        <p style="color:#5b5b66;">Due tomorrow</p>
+        <div style="height:6px;background:#e5e5e7;border-radius:3px;margin-top:12px;">
+          <div style="width:65%;height:100%;background:linear-gradient(90deg, #0071e3, #6951e3);border-radius:3px;"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <span class="xp-badge" style="background:linear-gradient(135deg, #0071e3, #6951e3);">+50 XP</span>
+        <span style="padding:6px 16px;border-radius:999px;font-size:13px;font-weight:500;color:#5b5b66;background:#e5e5e7;">Level 3</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- B: FULL GRADIENT -->
+<div class="section">
+  <div class="section-title">Approach B: Full Gradient Identity</div>
+  <p style="font-size:14px;color:#5b5b66;margin-bottom:16px;">Gradient also on page background and gamification. More distinctive but risks feeling busy.</p>
+  
+  <div style="background:linear-gradient(135deg, #f5f5f7, #eeeff7);border-radius:16px;padding:24px;">
+    <div class="hello-text" style="color:#000;">Good Evening</div>
+    <div style="display:flex;gap:12px;margin-bottom:16px;">
+      <div style="flex:1;background:#fff;border-radius:16px;padding:16px;border:1px solid rgba(0,0,0,0.04);">
+        <p style="font-size:12px;color:#8e8e93;">Study Hours</p>
+        <p style="font-size:24px;font-weight:700;background:linear-gradient(135deg, #0071e3, #6951e3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">2.5</p>
+      </div>
+      <div style="flex:1;background:#fff;border-radius:16px;padding:16px;border:1px solid rgba(0,0,0,0.04);">
+        <p style="font-size:12px;color:#8e8e93;">XP Today</p>
+        <p style="font-size:24px;font-weight:700;background:linear-gradient(135deg, #0071e3, #6951e3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">340</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <span class="demo-btn" style="background:linear-gradient(135deg, #0071e3, #6951e3);">View Tasks</span>
+    </div>
+  </div>
+</div>
+
+<!-- GRADIENT RULES -->
+<div class="section">
+  <div class="section-title">Gradient Guidelines</div>
+  <div style="background:#fff;border-radius:16px;padding:20px;border:1px solid #e5e5e7;">
+    <div style="margin-bottom:12px;">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div style="background:#0071e3;width:24px;height:24px;border-radius:6px;"></div>
+        <div style="background:linear-gradient(135deg, #0071e3, #6951e3);width:24px;height:24px;border-radius:6px;"></div>
+        <div style="background:#0071e3;width:24px;height:24px;border-radius:6px;opacity:0.3;"></div>
+      </div>
+      <p style="font-size:13px;color:#5b5b66;margin-top:4px;">Gradient: #0071e3 &rarr; #6951e3 (30&deg; hue shift, same saturation)</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div style="background:#f0f7ff;border-radius:12px;padding:12px;">
+        <p style="font-size:13px;font-weight:600;color:#0071e3;">Use on</p>
+        <ul style="font-size:13px;color:#333;margin-left:16px;margin-top:4px;">
+          <li>Primary buttons</li>
+          <li>XP / level badges</li>
+          <li>Progress bars</li>
+          <li>Active nav item</li>
+        </ul>
+      </div>
+      <div style="background:#fff0f0;border-radius:12px;padding:12px;">
+        <p style="font-size:13px;font-weight:600;color:#ff3b30;">Avoid on</p>
+        <ul style="font-size:13px;color:#333;margin-left:16px;margin-top:4px;">
+          <li>Body text (hard to read)</li>
+          <li>Small UI elements</li>
+          <li>Cards / containers</li>
+          <li>Error states (clarity matters)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top:16px;font-size:15px;font-weight:500;">Which gradient approach feels right? Click A, B, or C above, then reply.</p>
