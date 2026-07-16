@@ -18,21 +18,21 @@ export function GreetingHeader() {
   if (!mounted) return null
 
   return (
-    <div className="flex items-start justify-between mb-8">
+    <div className="flex items-start justify-between mb-12">
       <div>
-        <h1 className="text-[40px] font-bold leading-[1.1] tracking-[-0.02em]">
-          Good{" "}
+        <h1 className="font-bold tracking-[-0.03em] text-[72px] leading-[1.2]">
+          Good {greeting},{" "}
           <span className="bg-gradient-to-r from-[#7D39EB] to-[#C6FF33] bg-clip-text text-transparent">
-            {greeting}
+            Raghu
           </span>
         </h1>
-        <p className="mt-1.5 text-sm text-text-secondary">
+        <p className="mt-4 text-base text-text-secondary font-medium">
           {format(new Date(), "EEEE, d MMMM")} &middot; 3 tasks remaining
         </p>
       </div>
-      <div className="rounded-full bg-gradient-to-br from-[#7D39EB] to-[#C6FF33] p-[2px]">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black text-sm font-semibold text-white">
-          RK
+      <div className="rounded-full bg-gradient-to-br from-[#7D39EB] to-[#C6FF33] p-[3px] shrink-0">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-black text-xl font-semibold text-white">
+          R
         </div>
       </div>
     </div>

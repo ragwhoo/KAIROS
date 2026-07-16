@@ -44,3 +44,8 @@ next-env.d.ts
 .superpowers/
 
 dev-*.log
+/lib/generated/prisma
+
+# database
+*.db
+*.db-journal

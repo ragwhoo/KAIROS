@@ -1,107 +1,77 @@
+"use client"
+
+import { motion } from "framer-motion"
 import { GreetingHeader } from "@/components/features/greeting-header"
-import { XPBar } from "@/components/features/xp-bar"
 import { AIWidget } from "@/components/features/ai-widget"
-import { CTARow } from "@/components/features/cta-row"
-import { GlassPanel } from "@/components/features/glass-panel"
 import { TaskList } from "@/components/features/task-list"
 import { AddTaskButton } from "@/components/features/add-task-button"
-import { StatCard } from "@/components/features/stat-card"
 import { PageTransition } from "@/components/features/page-transition"
+import { useTasks } from "@/hooks/use-tasks"
+import { useCalendarEvents } from "@/hooks/use-calendar-events"
+import { isToday } from "date-fns"
+import { format } from "date-fns"
+import { Calendar } from "lucide-react"
 
 export default function DashboardPage() {
+  const { tasks, mutate } = useTasks()
+  const { events } = useCalendarEvents()
+
+  const remainingCount = tasks.filter((t) => t.status !== "done").length
+  const todayEvents = events.filter((e) => isToday(new Date(e.startTime)))
+
   return (
     <PageTransition>
-      <div className="px-10 py-8">
+      <div className="px-10 pt-20 pb-28">
         <GreetingHeader />
-        <XPBar />
-        <AIWidget />
 
-        {/* Stats */}
-        <div className="flex gap-4 mb-8">
-          <StatCard label="Completed" value={4} />
-          <StatCard label="Study Hours" value="2.5" />
-          <StatCard label="XP Today" value="+340" accent="lime" />
-        </div>
+        <div className="space-y-12">
+          <AIWidget />
 
-        <CTARow />
-
-        {/* Weekly Insights */}
-        <GlassPanel
-          title="This Week"
-          subtitle="You're on a 4-day streak. Keep going!"
-        >
-          <div className="grid grid-cols-4 gap-4">
-            <div className="rounded-xl bg-black/30 border border-[rgba(255,255,255,0.04)] p-4">
-              <p className="text-xs uppercase tracking-[0.05em] text-text-tertiary">
-                Tasks Done
-              </p>
-              <p className="text-2xl font-bold mt-1">18</p>
-            </div>
-            <div className="rounded-xl bg-black/30 border border-[rgba(255,255,255,0.04)] p-4">
-              <p className="text-xs uppercase tracking-[0.05em] text-text-tertiary">
-                Study Hours
-              </p>
-              <p className="text-2xl font-bold mt-1">12.5</p>
-            </div>
-            <div className="rounded-xl bg-black/30 border border-[rgba(255,255,255,0.04)] p-4">
-              <p className="text-xs uppercase tracking-[0.05em] text-text-tertiary">
-                Streak
-              </p>
-              <p className="text-2xl font-bold text-gamified mt-1">4 days</p>
-            </div>
-            <div className="rounded-xl bg-black/30 border border-[rgba(255,255,255,0.04)] p-4">
-              <p className="text-xs uppercase tracking-[0.05em] text-text-tertiary">
-                Consistency
-              </p>
-              <p className="text-2xl font-bold text-primary mt-1">82%</p>
-            </div>
-          </div>
-        </GlassPanel>
-
-        <div className="grid grid-cols-[1fr_320px] gap-8 mt-6">
           <div>
-            <TaskList />
-            <div className="mt-3">
-              <AddTaskButton />
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold">
+                Today&apos;s Tasks
+                <span className="ml-3 text-sm text-text-tertiary font-normal">
+                  {remainingCount} remaining
+                </span>
+              </h2>
+            </div>
+            <div className="space-y-4">
+              <AddTaskButton onMutate={mutate} />
+              <TaskList />
             </div>
           </div>
-          <div className="space-y-4">
-            <div className="rounded-2xl bg-surface-1 border border-border p-5">
-              <h3 className="text-sm font-semibold mb-3">Recent Activity</h3>
-              <div className="space-y-3">
-                {[
-                  { action: "Completed Math review", time: "2h ago", color: "text-gamified" },
-                  { action: "Added DBMS assignment", time: "4h ago", color: "text-primary" },
-                  { action: "Started Physics lab", time: "6h ago", color: "text-text-secondary" },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className="h-2 w-2 rounded-full bg-current" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm truncate">{item.action}</p>
-                      <p className="text-xs text-text-tertiary">{item.time}</p>
+
+          {todayEvents.length > 0 && (
+            <div>
+              <h2 className="text-lg font-semibold mb-4">Today&apos;s Schedule</h2>
+              <div className="space-y-2">
+                {todayEvents.map((event) => (
+                  <div
+                    key={event.id}
+                    className="flex items-center gap-3 rounded-xl bg-surface-1 border border-border p-3"
+                  >
+                    <div className="flex flex-col items-center justify-center w-14 shrink-0">
+                      <span className="text-[10px] text-text-tertiary">
+                        {format(new Date(event.startTime), "a")}
+                      </span>
+                      <span className="text-sm font-bold">
+                        {format(new Date(event.startTime), "h:mm")}
+                      </span>
                     </div>
+                    <div className="w-px h-10 bg-border" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{event.title}</p>
+                      {event.subject && (
+                        <p className="text-xs text-text-tertiary">{event.subject}</p>
+                      )}
+                    </div>
+                    <Calendar className="h-4 w-4 text-text-tertiary shrink-0" />
                   </div>
                 ))}
               </div>
             </div>
-            <div className="rounded-2xl bg-surface-1 border border-border p-5">
-              <h3 className="text-sm font-semibold mb-3">Upcoming</h3>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between py-1.5">
-                  <span className="text-sm">DBMS Exam</span>
-                  <span className="text-xs text-text-tertiary">6 days</span>
-                </div>
-                <div className="flex items-center justify-between py-1.5">
-                  <span className="text-sm">Physics Lab</span>
-                  <span className="text-xs text-text-tertiary">Tomorrow</span>
-                </div>
-                <div className="flex items-center justify-between py-1.5">
-                  <span className="text-sm">Math Quiz</span>
-                  <span className="text-xs text-warning">Friday</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </PageTransition>

@@ -1,52 +1,52 @@
+"use client"
+
+import { AnimatePresence } from "framer-motion"
+import { useTasks } from "@/hooks/use-tasks"
 import { TaskCard } from "./task-card"
+import { TaskListSkeleton } from "./task-list-skeleton"
 
-const sampleTasks = [
-  {
-    title: "Finish DBMS Assignment",
-    priority: "focus" as const,
-    subject: "DBMS",
-    dueText: "Due tomorrow",
-    attachments: 2,
-    timeEstimate: "45m",
-    progress: 65,
-  },
-  {
-    title: "Review Math Notes",
-    priority: "success" as const,
-    subject: "Mathematics",
-    xpReward: 25,
-    completed: true,
-  },
-  {
-    title: "Submit Lab Report",
-    priority: "warning" as const,
-    subject: "Physics",
-    dueText: "Due in 3h",
-    attachments: 1,
-    timeEstimate: "20m",
-    progress: 40,
-  },
-  {
-    title: "Pay Library Fine",
-    priority: "danger" as const,
-    dueText: "Overdue by 2 days",
-    dueUrgent: true,
-    progress: 25,
-  },
-]
+interface TaskListProps {
+  filter?: "all" | "today" | "upcoming" | "completed"
+}
 
-export function TaskList() {
+export function TaskList({ filter = "all" }: TaskListProps) {
+  const { tasks, isLoading, mutate } = useTasks()
+
+  if (isLoading) return <TaskListSkeleton />
+
+  if (tasks.length === 0) {
+    return (
+      <div className="rounded-2xl border border-dashed border-border p-10 text-center">
+        <p className="text-sm text-text-tertiary">No tasks yet. Add one to get started.</p>
+      </div>
+    )
+  }
+
+  const filtered = tasks.filter((task) => {
+    if (filter === "completed") return task.status === "done"
+    if (filter === "today") {
+      if (!task.dueDate) return false
+      return new Date(task.dueDate).toDateString() === new Date().toDateString()
+    }
+    if (filter === "upcoming") {
+      if (!task.dueDate) return false
+      return new Date(task.dueDate) > new Date()
+    }
+    return true
+  })
+
   return (
     <div className="space-y-2.5">
-      <div className="flex items-center justify-between mb-1">
-        <h2 className="text-lg font-semibold">Today&apos;s Tasks</h2>
-        <button className="text-xs font-medium text-primary hover:text-primary-hover transition-colors">
-          View All
-        </button>
-      </div>
-      {sampleTasks.map((task, i) => (
-        <TaskCard key={i} {...task} />
-      ))}
+      <AnimatePresence>
+        {filtered.map((task) => (
+          <TaskCard key={task.id} task={task} onMutate={mutate} />
+        ))}
+      </AnimatePresence>
+      {filtered.length === 0 && tasks.length > 0 && (
+        <div className="rounded-2xl border border-dashed border-border p-8 text-center">
+          <p className="text-sm text-text-tertiary">No tasks in this view.</p>
+        </div>
+      )}
     </div>
   )
 }
