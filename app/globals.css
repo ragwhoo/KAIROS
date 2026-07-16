@@ -1,26 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Fonts */
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+
+  /* Core palette */
+  --color-background: #000000;
+  --color-foreground: #ffffff;
+
+  /* Surfaces */
+  --color-surface-1: rgba(255, 255, 255, 0.04);
+  --color-surface-2: rgba(255, 255, 255, 0.08);
+  --color-surface-3: rgba(255, 255, 255, 0.12);
+
+  /* Border */
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-input: rgba(255, 255, 255, 0.06);
+  --color-ring: #7d39eb;
+
+  /* Primary (Violet) */
+  --color-primary: #7d39eb;
+  --color-primary-hover: #9263f0;
+  --color-primary-active: #6a2fc8;
+  --color-primary-50: rgba(125, 57, 235, 0.08);
+  --color-primary-100: rgba(125, 57, 235, 0.15);
+  --color-primary-glow: rgba(125, 57, 235, 0.3);
+
+  /* Gamified (Lime) */
+  --color-gamified: #c6ff33;
+  --color-gamified-hover: #d4ff5c;
+  --color-gamified-active: #a8e00f;
+  --color-gamified-100: rgba(198, 255, 51, 0.12);
+  --color-gamified-glow: rgba(198, 255, 51, 0.3);
+
+  /* Semantic */
+  --color-destructive: #ff3b5c;
+  --color-warning: #ff9f0a;
+  --color-success: #c6ff33;
+
+  /* Text */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #999999;
+  --color-text-tertiary: #666666;
+
+  /* Radius */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+
+  /* Shadows */
+  --shadow-card-hover: 0 8px 24px rgba(125, 57, 235, 0.12);
+  --shadow-neon-violet: 0 0 24px rgba(125, 57, 235, 0.3);
+  --shadow-neon-lime: 0 0 24px rgba(198, 255, 51, 0.3);
+
+  /* Animations */
+  --animate-pulse-slow: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  ::selection {
+    background: rgba(125, 57, 235, 0.3);
+    color: #ffffff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.15);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@utility text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #7d39eb, #c6ff33);
+}
+
+@utility glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@utility glass-strong {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+@utility neon-glow-violet {
+  box-shadow: 0 0 24px rgba(125, 57, 235, 0.3);
+}
+
+@utility neon-glow-lime {
+  box-shadow: 0 0 24px rgba(198, 255, 51, 0.3);
 }
