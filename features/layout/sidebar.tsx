@@ -1,5 +1,7 @@
 "use client"
 
+import { useRef, useLayoutEffect } from "react"
+import gsap from "gsap"
 import {
   LayoutDashboard,
   Calendar,
@@ -9,15 +11,12 @@ import {
   BarChart3,
   Settings,
   PanelLeftClose,
-  PanelLeft,
 } from "lucide-react"
-import { motion } from "framer-motion"
 import { SidebarItem } from "./sidebar-item"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { Progress } from "@/components/ui/progress"
 import { useDashboardStore } from "@/store/use-dashboard-store"
-import { cn } from "@/lib/utils"
 
 const navItems = [
   { icon: LayoutDashboard, label: "Home", href: "/" },
@@ -31,43 +30,77 @@ const navItems = [
 export function Sidebar() {
   const sidebarOpen = useDashboardStore((s) => s.sidebarOpen)
   const toggleSidebar = useDashboardStore((s) => s.toggleSidebar)
+  const asideRef = useRef<HTMLElement>(null)
+  const brandTextRef = useRef<HTMLSpanElement>(null)
+  const closeBtnRef = useRef<HTMLButtonElement>(null)
+  const userInfoRef = useRef<HTMLDivElement>(null)
+  const settingsRef = useRef<HTMLDivElement>(null)
+  const xpBarRef = useRef<HTMLDivElement>(null)
+
+  // Set initial states on mount so GSAP has full control
+  useLayoutEffect(() => {
+    const hidden = !sidebarOpen
+    gsap.set(brandTextRef.current, { opacity: hidden ? 0 : 1, x: hidden ? -10 : 0 })
+    gsap.set(closeBtnRef.current, { opacity: hidden ? 0 : 1, x: hidden ? 10 : 0 })
+    gsap.set(userInfoRef.current, { opacity: hidden ? 0 : 1, x: hidden ? 20 : 0 })
+    gsap.set(settingsRef.current, { opacity: hidden ? 0 : 1, x: hidden ? 20 : 0 })
+    gsap.set(xpBarRef.current, { opacity: hidden ? 0 : 1, height: hidden ? 0 : "auto", marginTop: hidden ? 0 : 12 })
+  }, [])
+
+  useLayoutEffect(() => {
+    if (!asideRef.current) return
+    gsap.to(asideRef.current, {
+      width: sidebarOpen ? 240 : 64,
+      duration: 0.4,
+      ease: "power3.out",
+    })
+  }, [sidebarOpen])
+
+  useLayoutEffect(() => {
+    if (sidebarOpen) {
+      gsap.to(brandTextRef.current, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" })
+      gsap.to(closeBtnRef.current, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out", delay: 0.05 })
+      gsap.to(userInfoRef.current, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out", delay: 0.1 })
+      gsap.to(settingsRef.current, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out", delay: 0.1 })
+      gsap.to(xpBarRef.current, { opacity: 1, height: "auto", marginTop: 12, duration: 0.3, ease: "power2.out", delay: 0.15 })
+    } else {
+      gsap.to(brandTextRef.current, { opacity: 0, x: -10, duration: 0.15, ease: "power2.in" })
+      gsap.to(closeBtnRef.current, { opacity: 0, x: 10, duration: 0.15, ease: "power2.in" })
+      gsap.to(userInfoRef.current, { opacity: 0, x: 20, duration: 0.15, ease: "power2.in" })
+      gsap.to(settingsRef.current, { opacity: 0, x: 20, duration: 0.15, ease: "power2.in" })
+      gsap.to(xpBarRef.current, { opacity: 0, height: 0, marginTop: 0, duration: 0.15, ease: "power2.in" })
+    }
+  }, [sidebarOpen])
 
   return (
-    <motion.aside
-      animate={{ width: sidebarOpen ? 240 : 64 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30, mass: 1 }}
+    <aside
+      ref={asideRef}
       className="fixed left-0 top-0 z-30 flex h-full flex-col border-r border-border bg-background overflow-hidden"
+      style={{ width: 240 }}
     >
-      {/* Brand */}
-      <div className={cn("flex items-center pt-6 pb-5", sidebarOpen ? "justify-between px-4" : "justify-center px-2")}>
-        <button
-          onClick={toggleSidebar}
-          className={cn(
-            "flex items-center gap-2.5",
-            sidebarOpen ? "min-w-0" : "flex-col"
-          )}
-        >
+      {/* Brand — always px-4 so K logo stays at consistent left position */}
+      <div className="flex items-center justify-between px-4 pt-6 pb-5">
+        <button onClick={toggleSidebar} className="flex items-center gap-2.5">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#7D39EB] to-[#C6FF33] text-sm font-bold text-black">
             K
           </div>
-          {sidebarOpen && (
-            <span className="text-lg font-bold tracking-tight">Kairos</span>
-          )}
+          <span ref={brandTextRef} className="text-lg font-bold tracking-tight whitespace-nowrap">
+            Kairos
+          </span>
         </button>
-        {sidebarOpen && (
-          <button
-            onClick={toggleSidebar}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-text-tertiary hover:text-foreground hover:bg-surface-1 transition-colors"
-          >
-            <PanelLeftClose className="h-4 w-4" />
-          </button>
-        )}
+        <button
+          ref={closeBtnRef}
+          onClick={toggleSidebar}
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-text-tertiary hover:text-foreground hover:bg-surface-1 transition-colors"
+        >
+          <PanelLeftClose className="h-4 w-4" />
+        </button>
       </div>
 
       <Separator className="mx-4 w-auto" />
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 px-2 py-4">
+      <nav className="flex-1 space-y-1 px-2 py-4 overflow-hidden">
         {navItems.map((item) => (
           <SidebarItem
             key={item.href}
@@ -79,36 +112,32 @@ export function Sidebar() {
         ))}
       </nav>
 
-      {/* User section */}
-      <div className={cn("border-t border-border p-4", !sidebarOpen && "px-2")}>
-        <div className={cn("flex items-center", sidebarOpen ? "gap-3" : "flex-col gap-1")}>
-          <div className="rounded-full bg-gradient-to-br from-[#7D39EB] to-[#C6FF33] p-[2px]">
+      {/* User section — pb-0 so avatar sits at the very bottom when collapsed */}
+      <div className="border-t border-border pt-4 px-4 pb-2">
+        <div className="flex items-center gap-3">
+          <div className="rounded-full bg-gradient-to-br from-[#7D39EB] to-[#C6FF33] p-[2px] shrink-0">
             <Avatar className="h-9 w-9">
               <AvatarFallback className="bg-black text-xs text-white">
                 R
               </AvatarFallback>
             </Avatar>
           </div>
-          {sidebarOpen && (
-            <>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">Scholar</p>
-                <p className="text-xs text-text-tertiary">Level 7</p>
-              </div>
-              <Settings className="h-4 w-4 text-text-tertiary hover:text-foreground cursor-pointer transition-colors shrink-0" />
-            </>
-          )}
-        </div>
-        {sidebarOpen && (
-          <div className="mt-3">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs text-text-tertiary">1,240 XP</span>
-              <span className="text-xs text-gamified font-medium">2,000</span>
-            </div>
-            <Progress value={62} className="h-1.5" />
+          <div ref={userInfoRef} className="flex-1 min-w-0">
+            <p className="text-sm font-medium truncate">Scholar</p>
+            <p className="text-xs text-text-tertiary">Level 7</p>
           </div>
-        )}
+          <div ref={settingsRef} className="shrink-0">
+            <Settings className="h-4 w-4 text-text-tertiary hover:text-foreground cursor-pointer transition-colors" />
+          </div>
+        </div>
+        <div ref={xpBarRef} className="overflow-hidden">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-xs text-text-tertiary">1,240 XP</span>
+            <span className="text-xs text-gamified font-medium">2,000</span>
+          </div>
+          <Progress value={62} className="h-1.5" />
+        </div>
       </div>
-    </motion.aside>
+    </aside>
   )
 }

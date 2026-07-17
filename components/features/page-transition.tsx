@@ -1,21 +1,19 @@
 "use client"
 
-import { motion } from "framer-motion"
-import type { ReactNode } from "react"
+import { useRef, useLayoutEffect, type ReactNode } from "react"
+import gsap from "gsap"
 
 interface PageTransitionProps {
   children: ReactNode
 }
 
 export function PageTransition({ children }: PageTransitionProps) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-    >
-      {children}
-    </motion.div>
-  )
+  const ref = useRef<HTMLDivElement>(null)
+
+  useLayoutEffect(() => {
+    if (!ref.current) return
+    gsap.fromTo(ref.current, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" })
+  }, [])
+
+  return <div ref={ref}>{children}</div>
 }

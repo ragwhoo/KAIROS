@@ -4,6 +4,8 @@ interface DashboardState {
   sidebarOpen: boolean
   toggleSidebar: () => void
   setSidebarOpen: (open: boolean) => void
+  pendingChatMessage: string | null
+  setPendingChatMessage: (msg: string | null) => void
   tasksCompleted: number
   studyHours: number
   xpToday: number
@@ -15,6 +17,8 @@ export const useDashboardStore = create<DashboardState>((set) => ({
   sidebarOpen: true,
   toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
+  pendingChatMessage: null,
+  setPendingChatMessage: (msg) => set({ pendingChatMessage: msg }),
   tasksCompleted: 4,
   studyHours: 2.5,
   xpToday: 340,

@@ -2,8 +2,11 @@
 
 import { Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useDashboardStore } from "@/store/use-dashboard-store"
 
 export function AIWidget() {
+  const setPendingChatMessage = useDashboardStore((s) => s.setPendingChatMessage)
+
   return (
     <div
       className="relative overflow-hidden rounded-2xl border border-primary-100 p-5"
@@ -35,16 +38,25 @@ export function AIWidget() {
         </p>
 
         <div className="flex gap-2">
-          <Button variant="primary" size="sm">
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => setPendingChatMessage("Show me the DBMS revision plan for my exam in 6 days")}
+          >
             Review Plan
           </Button>
-          <Button variant="secondary" size="sm">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setPendingChatMessage("Schedule the DBMS revision plan covering all 4 modules across the next 6 days")}
+          >
             Schedule It
           </Button>
           <Button
             variant="secondary"
             size="sm"
             className="bg-gamified-100 text-gamified border-[rgba(198,255,51,0.15)] hover:bg-gamified-100"
+            onClick={() => setPendingChatMessage(null)}
           >
             Later
           </Button>
