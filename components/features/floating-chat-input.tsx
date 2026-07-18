@@ -18,6 +18,7 @@ export function FloatingChatInput() {
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (!SpeechRecognition) {
+      console.log("[Voice] SpeechRecognition not available")
       setSupported(false)
       return
     }
@@ -30,14 +31,17 @@ export function FloatingChatInput() {
       const transcript = Array.from(event.results)
         .map((r: any) => r[0].transcript)
         .join("")
+      console.log("[Voice] onresult:", transcript)
       setInput(transcript)
     }
 
     recognition.onend = () => {
+      console.log("[Voice] onend fired")
       setIsListening(false)
     }
 
-    recognition.onerror = () => {
+    recognition.onerror = (event: any) => {
+      console.log("[Voice] onerror:", event.error, event.message)
       setIsListening(false)
     }
 
@@ -47,9 +51,11 @@ export function FloatingChatInput() {
   const toggleListening = useCallback(() => {
     if (!recognitionRef.current) return
     if (isListening) {
+      console.log("[Voice] stopping")
       recognitionRef.current.stop()
       setIsListening(false)
     } else {
+      console.log("[Voice] starting")
       recognitionRef.current.start()
       setIsListening(true)
     }
@@ -57,7 +63,9 @@ export function FloatingChatInput() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    console.log("[Chat] handleSubmit called, input:", input, "isLoading:", isLoading)
     if (!input.trim() || isLoading) return
+    console.log("[Chat] calling sendMessage with:", input)
     sendMessage({ text: input })
     setInput("")
   }

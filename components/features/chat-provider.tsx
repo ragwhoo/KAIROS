@@ -25,6 +25,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       mutateEvents()
       mutateNotes()
     },
+    onError: (err) => {
+      console.error("[ChatProvider] useChat error:", err)
+    },
   })
 
   return <ChatContext.Provider value={chat}>{children}</ChatContext.Provider>
