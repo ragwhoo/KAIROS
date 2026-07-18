@@ -6,6 +6,15 @@ import { rateLimit } from "@/lib/rate-limit"
 import { NextResponse } from "next/server"
 import { awardXP } from "@/lib/xp"
 
+export async function DELETE() {
+  try {
+    await db.chatMessage.deleteMany()
+    return NextResponse.json({ success: true })
+  } catch {
+    return NextResponse.json({ error: "Failed to clear messages" }, { status: 500 })
+  }
+}
+
 export async function GET() {
   const messages = await db.chatMessage.findMany({ orderBy: { createdAt: "asc" } })
   return NextResponse.json(messages)
