@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import { PageTransition } from "@/components/features/page-transition"
 import { GreetingHeader } from "@/components/features/greeting-header"
 import { AIWidget } from "@/components/features/ai-widget"
+import { ProfileCard } from "@/components/features/profile-card"
 import { TaskList } from "@/components/features/task-list"
 import { AddTaskButton } from "@/components/features/add-task-button"
 import { useTasks } from "@/hooks/use-tasks"
@@ -51,6 +52,8 @@ export default function HomePage() {
         </div>
 
         <div className="space-y-12">
+          <ProfileCard />
+
           <AIWidget />
 
           <div className="mt-10">

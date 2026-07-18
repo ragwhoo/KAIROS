@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress"
 import { ChatProvider } from "@/components/features/chat-provider"
 import { FloatingChatInput } from "@/components/features/floating-chat-input"
 import { ChatToast } from "@/components/features/chat-toast"
+import { XPAnimationContainer } from "@/components/features/xp-animation"
 import { LenisProvider } from "@/components/features/lenis-provider"
 import { useDashboardStore } from "@/store/use-dashboard-store"
 import { cn } from "@/lib/utils"
@@ -206,6 +207,7 @@ export default function DashboardLayout({
         </div>
         <FloatingChatInput />
         <ChatToast />
+        <XPAnimationContainer />
       </ChatProvider>
     </LenisProvider>
   )
