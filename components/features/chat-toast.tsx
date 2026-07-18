@@ -49,7 +49,7 @@ export function ChatToast() {
   const pathname = usePathname()
   const { messages, status } = useChatContext()
   const [toast, setToast] = useState<string | null>(null)
-  const lastShownId = useRef<string | null>(null)
+  const lastTextRef = useRef<string | null>(null)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
   const isChatPage = pathname === "/ai"
@@ -68,9 +68,9 @@ export function ChatToast() {
     const text = getMessageText(lastAssistant.parts)
     if (!text) return
 
-    // Show new assistant messages as toast
-    if (lastAssistant.id !== lastShownId.current) {
-      lastShownId.current = lastAssistant.id
+    // Update toast when text changes (handles streaming)
+    if (text !== lastTextRef.current) {
+      lastTextRef.current = text
       setToast(text)
 
       if (timerRef.current) clearTimeout(timerRef.current)
