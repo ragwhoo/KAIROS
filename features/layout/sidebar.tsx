@@ -7,6 +7,7 @@ import {
   Calendar,
   ListTodo,
   Notebook,
+  Sparkles,
   BarChart3,
   Settings,
   PanelLeftClose,
@@ -19,8 +20,9 @@ import { useDashboardStore } from "@/store/use-dashboard-store"
 
 const navItems = [
   { icon: LayoutDashboard, label: "Home", href: "/" },
-  { icon: ListTodo, label: "Today", href: "/today" },
+  { icon: Sparkles, label: "Chat", href: "/ai" },
   { icon: Calendar, label: "Calendar", href: "/calendar" },
+  { icon: ListTodo, label: "Tasks", href: "/tasks" },
   { icon: Notebook, label: "Notes", href: "/notes" },
   { icon: BarChart3, label: "Overview", href: "/overview" },
 ]

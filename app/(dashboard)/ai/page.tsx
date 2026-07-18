@@ -1,15 +1,10 @@
 "use client"
 
-import { useRef, useEffect, useState, useMemo } from "react"
+import { useRef, useEffect } from "react"
 import gsap from "gsap"
-import { useChat } from "@ai-sdk/react"
-import { DefaultChatTransport } from "ai"
-import { Sparkles, Send, User } from "lucide-react"
+import { Sparkles, User } from "lucide-react"
 import { PageTransition } from "@/components/features/page-transition"
-import { Button } from "@/components/ui/button"
-import { useTasks } from "@/hooks/use-tasks"
-import { useCalendarEvents } from "@/hooks/use-calendar-events"
-import { useNotes } from "@/hooks/use-notes"
+import { useChatContext } from "@/components/features/chat-provider"
 import { cn } from "@/lib/utils"
 
 const suggestions = [
@@ -20,8 +15,9 @@ const suggestions = [
 ]
 
 function getMessageText(parts: unknown[]): string {
+  if (!Array.isArray(parts)) return ""
   return parts
-    .filter((p): p is { type: string; text: string } => 
+    .filter((p): p is { type: string; text: string } =>
       typeof p === "object" && p !== null && "type" in p && (p as { type: string }).type === "text"
     )
     .map((p) => p.text)
@@ -59,22 +55,7 @@ function renderLinks(text: string): React.ReactNode[] {
 
 export default function AIPage() {
   const scrollRef = useRef<HTMLDivElement>(null)
-  const [input, setInput] = useState("")
-  const { mutate: mutateTasks } = useTasks()
-  const { mutate: mutateEvents } = useCalendarEvents()
-  const { mutate: mutateNotes } = useNotes()
-
-  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat" }), [])
-
-  const { messages, sendMessage, status } = useChat({
-    transport,
-    onFinish: () => {
-      mutateTasks()
-      mutateEvents()
-      mutateNotes()
-    },
-  })
-
+  const { messages, sendMessage, status } = useChatContext()
   const isLoading = status === "submitted" || status === "streaming"
 
   useEffect(() => {
@@ -83,21 +64,9 @@ export default function AIPage() {
     }
   }, [messages])
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!input.trim()) return
-    sendMessage({ text: input })
-    setInput("")
-  }
-
-  const handleSuggestion = (suggestion: string) => {
-    sendMessage({ text: suggestion })
-  }
-
   return (
     <PageTransition>
       <div className="px-10 pt-20 pb-28 h-screen flex flex-col">
-
         <div className="flex-1 flex flex-col min-h-0 max-w-4xl mx-auto w-full">
           <div
             ref={scrollRef}
@@ -116,10 +85,10 @@ export default function AIPage() {
                   </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full max-w-2xl">
-                  {suggestions.map((s, i) => (
+                  {suggestions.map((s) => (
                     <button
                       key={s}
-                      onClick={() => handleSuggestion(s)}
+                      onClick={() => sendMessage({ text: s })}
                       className="rounded-xl border border-border bg-surface-1 px-4 py-3 text-sm text-left text-text-secondary hover:text-foreground hover:border-primary-100 hover:bg-surface-2 transition-all"
                     >
                       {s}
@@ -128,7 +97,7 @@ export default function AIPage() {
                 </div>
               </div>
             ) : (
-              messages.map((msg, i) => (
+              messages.map((msg) => (
                 <div
                   key={msg.id}
                   className={cn(
@@ -163,26 +132,6 @@ export default function AIPage() {
                 </div>
               ))
             )}
-          </div>
-
-          <div className="pt-4">
-            <form onSubmit={handleSubmit} className="flex items-center gap-3 rounded-2xl border border-border bg-surface-1 px-5 py-3">
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask me anything..."
-                className="flex-1 bg-transparent text-sm placeholder:text-text-tertiary focus:outline-none"
-              />
-              <Button
-                type="submit"
-                variant="primary"
-                size="icon"
-                disabled={isLoading || !input.trim()}
-                className="shrink-0 h-8 w-8"
-              >
-                <Send className="h-4 w-4" />
-              </Button>
-            </form>
           </div>
         </div>
       </div>

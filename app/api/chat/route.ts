@@ -35,7 +35,7 @@ export async function POST(request: Request) {
   const result = streamText({
     model,
     stopWhen: isStepCount(2),
-    maxOutputTokens: 2000,
+    maxOutputTokens: 1200,
     system: `You are Kairos AI, a student-centric productivity assistant. Your job is to automatically manage tasks, schedule events, and take notes from natural conversation — the user should almost never need to create anything manually.
 
 Core behavior:
