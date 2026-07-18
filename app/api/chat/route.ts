@@ -32,11 +32,15 @@ export async function POST(request: Request) {
   const body = await request.json()
   const messages = toCoreMessages(body?.messages ?? [])
 
-  const result = streamText({
-    model,
-    stopWhen: isStepCount(2),
-    maxOutputTokens: 1200,
-    system: `You are Kairos AI, a student-centric productivity assistant. Your job is to automatically manage tasks, schedule events, and take notes from natural conversation — the user should almost never need to create anything manually.
+  console.log("[API/chat] messages:", JSON.stringify(messages).slice(0, 200))
+
+  let result
+  try {
+    result = streamText({
+      model,
+      stopWhen: isStepCount(2),
+      maxOutputTokens: 1200,
+      system: `You are Kairos AI, a student-centric productivity assistant. Your job is to automatically manage tasks, schedule events, and take notes from natural conversation — the user should almost never need to create anything manually.
 
 Core behavior:
 - When the user mentions any study plan, deadline, exam, assignment, or to-do item, **automatically create it as a task** using createTask. Auto-assign priority: high for tasks due today (urgent/expressed same-day), medium for tasks due within next 2 days, low for tasks due within the next week. Set a reasonable due date if mentioned.
@@ -155,4 +159,8 @@ Be concise, friendly, and encouraging. Use a dark/premium aesthetic tone. Never 
   })
 
   return result.toUIMessageStreamResponse()
+  } catch (e) {
+    console.error("[API/chat] streamText error:", e)
+    return NextResponse.json({ error: String(e) }, { status: 500 })
+  }
 }

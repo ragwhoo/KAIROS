@@ -1,117 +1,118 @@
 "use client"
 
 import { useState, useRef, useCallback, useEffect } from "react"
-import { Send, Sparkles, Mic, MicOff, Loader2 } from "lucide-react"
+import { Send, Sparkles, Mic, MicOff, RefreshCw } from "lucide-react"
 import { useChatContext } from "./chat-provider"
 import { cn } from "@/lib/utils"
 
 export function FloatingChatInput() {
   const { sendMessage, status } = useChatContext()
   const [input, setInput] = useState("")
-  const [isRecording, setIsRecording] = useState(false)
-  const [isTranscribing, setIsTranscribing] = useState(false)
-  const [micFailed, setMicFailed] = useState(false)
+  const [isListening, setIsListening] = useState(false)
+  const [micStatus, setMicStatus] = useState<"idle" | "connecting" | "listening" | "error">("idle")
   const [supported, setSupported] = useState(false)
-  useEffect(() => {
-    setSupported(
-      typeof navigator.mediaDevices?.getUserMedia === "function" &&
-      typeof MediaRecorder !== "undefined"
-    )
-  }, [])
-
-  const recorderRef = useRef<MediaRecorder | null>(null)
-  const streamRef = useRef<MediaStream | null>(null)
-  const chunksRef = useRef<Blob[]>([])
+  const recognitionRef = useRef<any>(null)
+  const retryCountRef = useRef(0)
+  const micStatusRef = useRef(micStatus)
+  micStatusRef.current = micStatus
   const isLoading = status === "submitted" || status === "streaming"
 
-  const startRecording = useCallback(async () => {
-    setMicFailed(false)
+  useEffect(() => {
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    if (!SR) {
+      setSupported(false)
+      return
+    }
+    setSupported(true)
 
-    if (navigator.permissions) {
-      try {
-        const status = await navigator.permissions.query({ name: "microphone" as PermissionName })
-        console.log("[Voice] mic permission state:", status.state)
-        if (status.state === "denied") {
-          console.log("[Voice] mic permanently denied")
-          setMicFailed(true)
-          setTimeout(() => setMicFailed(false), 8000)
-          return
-        }
-      } catch (permErr) {
-        console.log("[Voice] perm query failed:", permErr)
+    const recognition = new SR()
+    recognition.continuous = true
+    recognition.interimResults = true
+    recognition.lang = "en-US"
+
+    recognition.onstart = () => {
+      console.log("[Voice] onstart")
+      setMicStatus("listening")
+    }
+
+    recognition.onresult = (event: any) => {
+      setMicStatus("listening")
+      const transcript = Array.from(event.results)
+        .map((r: any) => r[0].transcript)
+        .join("")
+      if (transcript) setInput(transcript)
+    }
+
+    recognition.onerror = (event: any) => {
+      console.log("[Voice] onerror:", event.error, event.message)
+      if (event.error === "no-speech") return
+      if (event.error === "network" && retryCountRef.current < 3) {
+        retryCountRef.current++
+        console.log("[Voice] network retry", retryCountRef.current)
+        setMicStatus("connecting")
+        setTimeout(() => {
+          try { recognition.start() } catch {}
+        }, 500 * retryCountRef.current)
+        return
+      }
+      setMicStatus("error")
+      setIsListening(false)
+    }
+
+    recognition.onend = () => {
+      console.log("[Voice] onend")
+      setIsListening(false)
+      if (micStatusRef.current === "listening" || micStatusRef.current === "connecting") {
+        setMicStatus("idle")
       }
     }
 
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      console.log("[Voice] getUserMedia succeeded")
-      streamRef.current = stream
-
-      const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
-        ? "audio/webm;codecs=opus"
-        : MediaRecorder.isTypeSupported("audio/mp4")
-          ? "audio/mp4"
-          : "audio/webm"
-
-      const recorder = new MediaRecorder(stream, { mimeType: mime })
-      chunksRef.current = []
-
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data)
-      }
-
-      recorder.onstop = async () => {
-        stream.getTracks().forEach((t) => t.stop())
-        streamRef.current = null
-
-        const blob = new Blob(chunksRef.current, { type: mime })
-        setIsTranscribing(true)
-
-        try {
-          const fd = new FormData()
-          fd.append("audio", blob, "recording." + (mime.includes("mp4") ? "m4a" : "webm"))
-
-          const res = await fetch("/api/transcribe", { method: "POST", body: fd })
-          const data = await res.json()
-          console.log("[Voice] transcribe response:", data)
-          if (data.text) {
-            setInput(data.text)
-          } else {
-            setMicFailed(true)
-          }
-        } catch (err) {
-          console.log("[Voice] transcribe fetch error:", err)
-          setMicFailed(true)
-        } finally {
-          setIsTranscribing(false)
-        }
-      }
-
-      recorder.start()
-      recorderRef.current = recorder
-      setIsRecording(true)
-    } catch (err) {
-      console.log("[Voice] getUserMedia error:", err)
-      setMicFailed(true)
-      setTimeout(() => setMicFailed(false), 8000)
-    }
+    recognitionRef.current = recognition
   }, [])
 
-  const toggleRecording = useCallback(() => {
-    if (isTranscribing) return
-    if (isRecording) {
-      recorderRef.current?.stop()
-      setIsRecording(false)
+  const toggleListening = useCallback(() => {
+    const r = recognitionRef.current
+    if (!r) return
+    if (isListening || micStatus === "connecting") {
+      try { r.stop() } catch {}
+      setIsListening(false)
+      setMicStatus("idle")
     } else {
-      startRecording()
+      retryCountRef.current = 0
+      setMicStatus("connecting")
+      try {
+        r.start()
+        setIsListening(true)
+      } catch (err) {
+        console.log("[Voice] start threw:", err)
+        setMicStatus("error")
+        setIsListening(false)
+      }
     }
-  }, [isRecording, isTranscribing, startRecording])
+  }, [isListening, micStatus])
 
-  const send = useCallback(() => {
+  useEffect(() => {
+    const r = recognitionRef.current
+    if (!r) return
+    const handler = () => {
+      console.log("[Voice] single auto-retry")
+      try { r.start() } catch {}
+    }
+    window.addEventListener("click", handler, { once: true })
+    return () => window.removeEventListener("click", handler)
+  }, [])
+
+  const send = useCallback(async () => {
     const text = input.trim()
+    console.log("[Chat] send called, text:", JSON.stringify(text), "isLoading:", isLoading)
     if (!text || isLoading) return
-    sendMessage({ text })
-    setInput("")
+    try {
+      const result = await sendMessage({ text })
+      console.log("[Chat] sendMessage result:", result)
+      setInput("")
+    } catch (err) {
+      console.error("[Chat] sendMessage threw:", err)
+    }
   }, [input, isLoading, sendMessage])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -121,9 +122,9 @@ export function FloatingChatInput() {
     }
   }
 
-  const micIcon = isTranscribing ? (
-    <Loader2 className="h-4 w-4 animate-spin" />
-  ) : isRecording ? (
+  const btnIcon = micStatus === "connecting" ? (
+    <RefreshCw className="h-4 w-4 animate-spin" />
+  ) : isListening ? (
     <MicOff className="h-4 w-4" />
   ) : (
     <Mic className="h-4 w-4" />
@@ -135,7 +136,7 @@ export function FloatingChatInput() {
         className={cn(
           "flex items-center gap-2 rounded-2xl border border-border bg-surface-1/95 backdrop-blur-xl px-4 py-2.5 shadow-2xl transition-colors",
           isLoading && "border-primary-100",
-          isRecording && "border-gamified"
+          isListening && "border-gamified"
         )}
       >
         <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#7D39EB] to-[#C6FF33]">
@@ -146,25 +147,23 @@ export function FloatingChatInput() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={
-            isRecording ? "Recording..." : isTranscribing ? "Transcribing..." : isLoading ? "Kairos is thinking..." : "Ask Kairos anything..."
+            micStatus === "connecting" ? "Connecting..." : isListening ? "Listening..." : isLoading ? "Kairos is thinking..." : "Ask Kairos anything..."
           }
           className="flex-1 bg-transparent text-sm placeholder:text-text-tertiary focus:outline-none"
         />
         {supported && (
           <button
             type="button"
-            onClick={toggleRecording}
-            disabled={isTranscribing}
+            onClick={toggleListening}
             className={cn(
               "shrink-0 flex h-8 w-8 items-center justify-center rounded-lg transition-all",
-              isRecording
+              isListening
                 ? "text-gamified bg-gamified-100 animate-pulse"
-                : "text-text-tertiary hover:text-foreground hover:bg-surface-2",
-              isTranscribing && "opacity-50 cursor-not-allowed"
+                : "text-text-tertiary hover:text-foreground hover:bg-surface-2"
             )}
-            aria-label={isRecording ? "Stop recording" : "Start voice input"}
+            aria-label={isListening ? "Stop recording" : "Start voice input"}
           >
-            {micIcon}
+            {btnIcon}
           </button>
         )}
         <button
@@ -176,9 +175,9 @@ export function FloatingChatInput() {
           <Send className="h-4 w-4" />
         </button>
       </div>
-      {micFailed && (
+      {micStatus === "error" && (
         <p className="mt-1.5 text-center text-xs text-red-400">
-          Voice input unavailable. Check microphone permissions and try again.
+          Voice unavailable. Open chrome://settings/?search=speech and enable &quot;Speak&quot;.
         </p>
       )}
     </div>
