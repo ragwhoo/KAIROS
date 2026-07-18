@@ -64,11 +64,11 @@ export function Sidebar() {
       gsap.to(settingsRef.current, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out", delay: 0.1 })
       gsap.to(xpBarRef.current, { opacity: 1, height: "auto", marginTop: 12, duration: 0.3, ease: "power2.out", delay: 0.15 })
     } else {
-      gsap.to(brandTextRef.current, { opacity: 0, x: -10, duration: 0.15, ease: "power2.in" })
-      gsap.to(closeBtnRef.current, { opacity: 0, x: 10, duration: 0.15, ease: "power2.in" })
-      gsap.to(userInfoRef.current, { opacity: 0, x: 20, duration: 0.15, ease: "power2.in" })
-      gsap.to(settingsRef.current, { opacity: 0, x: 20, duration: 0.15, ease: "power2.in" })
-      gsap.to(xpBarRef.current, { opacity: 0, height: 0, marginTop: 0, duration: 0.15, ease: "power2.in" })
+      gsap.to(brandTextRef.current, { opacity: 0, x: -10, duration: 0.2, ease: "power2.in" })
+      gsap.to(closeBtnRef.current, { opacity: 0, x: 10, duration: 0.2, ease: "power2.in" })
+      gsap.to(xpBarRef.current, { opacity: 0, height: 0, marginTop: 0, duration: 0.2, ease: "power2.in" })
+      gsap.to(userInfoRef.current, { opacity: 0, x: 20, duration: 0.2, ease: "power2.in", delay: 0.05 })
+      gsap.to(settingsRef.current, { opacity: 0, x: 20, duration: 0.2, ease: "power2.in", delay: 0.05 })
     }
   }, [sidebarOpen])
 

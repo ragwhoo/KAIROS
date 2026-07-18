@@ -1,7 +1,8 @@
+import "dotenv/config"
 import { PrismaClient } from "../lib/generated/prisma/client"
-import { PrismaLibSql } from "@prisma/adapter-libsql"
+import { PrismaNeon } from "@prisma/adapter-neon"
 
-const adapter = new PrismaLibSql({ url: "file:./dev.db" })
+const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL! })
 const prisma = new PrismaClient({ adapter })
 
 async function main() {

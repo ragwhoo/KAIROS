@@ -3,6 +3,7 @@
 import { useRef, useLayoutEffect } from "react"
 import gsap from "gsap"
 import { Sidebar } from "@/features/layout/sidebar"
+import { LenisProvider } from "@/components/features/lenis-provider"
 import { useDashboardStore } from "@/store/use-dashboard-store"
 
 export default function DashboardLayout({
@@ -23,11 +24,13 @@ export default function DashboardLayout({
   }, [sidebarOpen])
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <main ref={mainRef} className="flex-1">
-        {children}
-      </main>
-    </div>
+    <LenisProvider>
+      <div className="flex min-h-screen">
+        <Sidebar />
+        <main ref={mainRef} className="flex-1">
+          {children}
+        </main>
+      </div>
+    </LenisProvider>
   )
 }

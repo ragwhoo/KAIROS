@@ -101,6 +101,7 @@ export default function AIPage() {
         <div className="flex-1 flex flex-col min-h-0 max-w-4xl mx-auto w-full">
           <div
             ref={scrollRef}
+            data-lenis-prevent
             className="flex-1 overflow-y-auto space-y-4 pb-4"
           >
             {messages.length === 0 ? (

@@ -22,8 +22,8 @@ export function SidebarItem({ icon: Icon, label, href, collapsed }: SidebarItemP
 
   useLayoutEffect(() => {
     if (collapsed) {
-      gsap.to(textRef.current, { opacity: 0, maxWidth: 0, duration: 0.15, ease: "power2.in" })
-      if (dotRef.current) gsap.to(dotRef.current, { opacity: 0, maxWidth: 0, duration: 0.15, ease: "power2.in" })
+      gsap.to(textRef.current, { opacity: 0, maxWidth: 0, duration: 0.2, ease: "power2.in" })
+      if (dotRef.current) gsap.to(dotRef.current, { opacity: 0, maxWidth: 0, duration: 0.2, ease: "power2.in" })
     } else {
       gsap.to(textRef.current, { opacity: 1, maxWidth: 200, duration: 0.3, ease: "power2.out", delay: 0.1 })
       if (dotRef.current && isActive) {
@@ -37,8 +37,7 @@ export function SidebarItem({ icon: Icon, label, href, collapsed }: SidebarItemP
       href={href}
       title={collapsed ? label : undefined}
       className={cn(
-        "group flex items-center rounded-xl text-sm font-medium transition-colors duration-200 overflow-hidden",
-        collapsed ? "justify-center px-0 py-2.5" : "gap-3 px-3.5 py-2.5",
+        "group flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors duration-200 overflow-hidden",
         isActive
           ? "bg-primary-100 text-primary"
           : "text-text-secondary hover:text-foreground hover:bg-surface-1"
@@ -46,7 +45,7 @@ export function SidebarItem({ icon: Icon, label, href, collapsed }: SidebarItemP
     >
       <Icon
         className={cn(
-          "h-5 w-5 transition-all duration-200 shrink-0",
+          "h-5 w-5 transition-colors duration-200 shrink-0",
           isActive && "text-primary"
         )}
       />
