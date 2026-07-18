@@ -76,6 +76,7 @@ export function TaskCard({ task, onMutate }: TaskCardProps) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ source: "task", amount: xpAmount, reason: task.priority === "high" ? "High-priority task completed" : "Task completed" }),
           })
+          triggerXP(xpAmount, cardRef.current)
         })
     } else {
       setIsCompleted(false)
