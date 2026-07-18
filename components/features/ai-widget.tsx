@@ -1,11 +1,44 @@
 "use client"
 
+import { useMemo } from "react"
 import { Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useDashboardStore } from "@/store/use-dashboard-store"
+import { useTasks } from "@/hooks/use-tasks"
+import { useCalendarEvents } from "@/hooks/use-calendar-events"
 
 export function AIWidget() {
   const setPendingChatMessage = useDashboardStore((s) => s.setPendingChatMessage)
+  const { tasks } = useTasks()
+  const { events } = useCalendarEvents()
+
+  const suggestion = useMemo(() => {
+    const urgentTask = tasks.find((t) => t.priority === "high" && t.status !== "done")
+    const nextEvent = events
+      .filter((e) => new Date(e.startTime) > new Date())
+      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())[0]
+    const undoneTask = tasks.find((t) => t.status !== "done" && t.dueDate)
+
+    if (urgentTask) {
+      return {
+        text: `You have a high-priority task: "${urgentTask.title}"${urgentTask.dueDate ? ". It's due soon" : ""}. Want me to help plan it out?`,
+        action: `Help me plan and break down "${urgentTask.title}"${urgentTask.subject ? ` for ${urgentTask.subject}` : ""}`,
+        buttons: ["Plan It", "Remind Me Later"] as const,
+        type: "task" as const,
+      }
+    }
+    if (nextEvent) {
+      return {
+        text: `You have "${nextEvent.title}" coming up${nextEvent.subject ? ` in ${nextEvent.subject}` : ""}. Want to prepare?`,
+        action: `Help me prepare for "${nextEvent.title}"${nextEvent.subject ? ` in ${nextEvent.subject}` : ""}`,
+        buttons: ["Prepare", "Later"] as const,
+        type: "event" as const,
+      }
+    }
+    return null
+  }, [tasks, events])
+
+  if (!suggestion) return null
 
   return (
     <div
@@ -33,24 +66,16 @@ export function AIWidget() {
         </div>
 
         <p className="text-sm text-[rgba(255,255,255,0.75)] leading-relaxed mb-4">
-          You have a DBMS exam in 6 days. I&apos;ve prepared a revision plan
-          covering all 4 modules. Want me to schedule it?
+          {suggestion.text}
         </p>
 
         <div className="flex gap-2">
           <Button
             variant="primary"
             size="sm"
-            onClick={() => setPendingChatMessage("Show me the DBMS revision plan for my exam in 6 days")}
+            onClick={() => setPendingChatMessage(suggestion.action)}
           >
-            Review Plan
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => setPendingChatMessage("Schedule the DBMS revision plan covering all 4 modules across the next 6 days")}
-          >
-            Schedule It
+            {suggestion.buttons[0]}
           </Button>
           <Button
             variant="secondary"
@@ -58,7 +83,7 @@ export function AIWidget() {
             className="bg-gamified-100 text-gamified border-[rgba(198,255,51,0.15)] hover:bg-gamified-100"
             onClick={() => setPendingChatMessage(null)}
           >
-            Later
+            {suggestion.buttons[1]}
           </Button>
         </div>
       </div>
