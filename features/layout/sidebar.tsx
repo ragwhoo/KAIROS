@@ -12,7 +12,7 @@ import { Progress } from "@/components/ui/progress"
 import { useDashboardStore } from "@/store/use-dashboard-store"
 import { useProgress } from "@/hooks/use-progress"
 import { getRank } from "@/lib/ranks"
-import { getXPProgress } from "@/lib/xp"
+import { getXPProgress } from "@/lib/xp-utils"
 
 const navItems = [
   { icon: LayoutDashboard, label: "Home", href: "/" },

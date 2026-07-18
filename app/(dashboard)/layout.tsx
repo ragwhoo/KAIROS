@@ -19,7 +19,7 @@ import { LenisProvider } from "@/components/features/lenis-provider"
 import { useDashboardStore } from "@/store/use-dashboard-store"
 import { useProgress } from "@/hooks/use-progress"
 import { getRank } from "@/lib/ranks"
-import { getXPProgress } from "@/lib/xp"
+import { getXPProgress } from "@/lib/xp-utils"
 import { cn } from "@/lib/utils"
 
 const navItems = [

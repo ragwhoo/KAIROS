@@ -2,7 +2,7 @@
 
 import { useProgress } from "@/hooks/use-progress"
 import { getRank } from "@/lib/ranks"
-import { getXPProgress } from "@/lib/xp"
+import { getXPProgress } from "@/lib/xp-utils"
 import { Progress } from "@/components/ui/progress"
 import { Flame, Zap } from "lucide-react"
 
