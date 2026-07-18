@@ -16,7 +16,10 @@ function getColor(xp: number): string {
 
 export function Heatmap() {
   const { data: xpEvents } = useSWR<XPEvent[]>("/api/xp", fetcher)
-  const [tooltip, setTooltip] = useState<{ date: string; xp: number } | null>(null)
+  const [tooltip, setTooltip] = useState<{ date: string; xp: number }>(() => {
+    const today = format(new Date(), "MMM d, yyyy")
+    return { date: today, xp: 0 }
+  })
 
   const days = useMemo(() => {
     const today = startOfDay(new Date())
@@ -56,7 +59,7 @@ export function Heatmap() {
   return (
     <div className="rounded-2xl bg-surface-1 border border-border p-5">
       <h3 className="text-sm font-semibold mb-4">Activity (365 days)</h3>
-      <div className="overflow-x-auto pb-2" style={{ scrollbarWidth: "thin" }}>
+      <div className="overflow-x-auto pb-2 custom-h-scroll">
         <div className="flex gap-[3px]" style={{ minWidth: weeks.length * 14 }}>
           {weeks.map((week, wi) => (
             <div key={wi} className="flex flex-col gap-[3px]">
@@ -67,7 +70,6 @@ export function Heatmap() {
                   <div
                     key={key}
                     onMouseEnter={() => setTooltip({ date: format(day, "MMM d, yyyy"), xp })}
-                    onMouseLeave={() => setTooltip(null)}
                     className="w-3 h-3 rounded-sm cursor-pointer transition-transform hover:scale-125"
                     style={{ backgroundColor: getColor(xp) }}
                   />
@@ -77,11 +79,9 @@ export function Heatmap() {
           ))}
         </div>
       </div>
-      {tooltip && (
-        <div className="mt-2 text-xs text-text-tertiary">
-          {tooltip.date} — {tooltip.xp} XP
-        </div>
-      )}
+      <div className="mt-2 text-xs text-text-tertiary">
+        {tooltip.date} — {tooltip.xp} XP
+      </div>
       <div className="flex items-center gap-1 mt-3 text-xs text-text-tertiary">
         <span>Less</span>
         <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "var(--color-surface-2, #1a1a1a)" }} />
