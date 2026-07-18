@@ -1,7 +1,8 @@
 "use client"
 
-import { useRef, useLayoutEffect, useState, useEffect, useCallback } from "react"
-import { useRouter, usePathname } from "next/navigation"
+import { useRef, useLayoutEffect, useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
+import Link from "next/link"
 import gsap from "gsap"
 import { Menu, X, LayoutDashboard, Calendar, ListTodo, Notebook, Sparkles, BarChart3, Settings } from "lucide-react"
 import { Sidebar } from "@/features/layout/sidebar"
@@ -32,7 +33,6 @@ export default function DashboardLayout({
   const sidebarOpen = useDashboardStore((s) => s.sidebarOpen)
   const mainRef = useRef<HTMLElement>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const router = useRouter()
   const pathname = usePathname()
 
   const [isMobile, setIsMobile] = useState(
@@ -63,14 +63,6 @@ export default function DashboardLayout({
       ease: "power3.out",
     })
   }, [sidebarOpen, isMobile])
-
-  const handleNav = useCallback(
-    (href: string) => {
-      setMobileMenuOpen(false)
-      router.push(href)
-    },
-    [router]
-  )
 
   return (
     <LenisProvider>
@@ -111,9 +103,9 @@ export default function DashboardLayout({
                 {navItems.map((item) => {
                   const active = pathname === item.href
                   return (
-                    <button
+                    <Link
                       key={item.href}
-                      onClick={() => handleNav(item.href)}
+                      href={item.href}
                       className={cn(
                         "flex w-full items-center gap-4 rounded-2xl px-4 py-4 text-base font-medium transition-all",
                         active
@@ -126,7 +118,7 @@ export default function DashboardLayout({
                       {active && (
                         <div className="ml-auto h-2 w-2 rounded-full bg-primary" />
                       )}
-                    </button>
+                    </Link>
                   )
                 })}
               </nav>
