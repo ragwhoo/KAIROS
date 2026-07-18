@@ -4,6 +4,7 @@ import { model } from "@/lib/ai"
 import { db } from "@/lib/db"
 import { rateLimit } from "@/lib/rate-limit"
 import { NextResponse } from "next/server"
+import { awardXP } from "@/lib/xp"
 
 function extractText(part: unknown): string {
   if (typeof part === "string") return part
@@ -28,6 +29,8 @@ export async function POST(request: Request) {
   if (!allowed) {
     return NextResponse.json({ error: "Too many requests. Try again in a minute." }, { status: 429, headers: { "X-RateLimit-Remaining": "0" } })
   }
+
+  try { await awardXP("chat", 15, "AI conversation") } catch {}
 
   const body = await request.json()
   const messages = toCoreMessages(body?.messages ?? [])

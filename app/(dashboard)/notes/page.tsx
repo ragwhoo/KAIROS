@@ -35,6 +35,11 @@ export default function NotesPage() {
     setSubject("")
     setIsCreating(false)
     mutate()
+    fetch("/api/xp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source: "note", amount: 10, reason: "Note created" }),
+    }).catch(() => {})
   }
 
   const handleUpdate = async (id: string) => {

@@ -69,6 +69,12 @@ export function TaskCard({ task, onMutate }: TaskCardProps) {
             completedAt: new Date().toISOString(),
           })
           onMutate?.()
+          const xpAmount = task.priority === "high" ? 35 : 15
+          await fetch("/api/xp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ source: "task", amount: xpAmount, reason: task.priority === "high" ? "High-priority task completed" : "Task completed" }),
+          })
         })
     } else {
       setIsCompleted(false)
