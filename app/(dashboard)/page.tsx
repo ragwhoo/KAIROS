@@ -6,6 +6,7 @@ import { GreetingHeader } from "@/components/features/greeting-header"
 import { AIWidget } from "@/components/features/ai-widget"
 import { ProfileCard } from "@/components/features/profile-card"
 import { DailyMissions } from "@/components/features/daily-missions"
+import { Heatmap } from "@/components/features/heatmap"
 import { TaskList } from "@/components/features/task-list"
 import { AddTaskButton } from "@/components/features/add-task-button"
 import { useTasks } from "@/hooks/use-tasks"
@@ -57,6 +58,8 @@ export default function HomePage() {
             <ProfileCard />
             <DailyMissions />
           </div>
+
+          <Heatmap />
 
           <AIWidget />
 
