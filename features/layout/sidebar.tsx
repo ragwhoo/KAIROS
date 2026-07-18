@@ -10,6 +10,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { Progress } from "@/components/ui/progress"
 import { useDashboardStore } from "@/store/use-dashboard-store"
+import { useProgress } from "@/hooks/use-progress"
+import { getRank } from "@/lib/ranks"
+import { getXPProgress } from "@/lib/xp"
 
 const navItems = [
   { icon: LayoutDashboard, label: "Home", href: "/" },
@@ -29,6 +32,10 @@ export function Sidebar() {
   const userInfoRef = useRef<HTMLDivElement>(null)
   const settingsRef = useRef<HTMLDivElement>(null)
   const xpBarRef = useRef<HTMLDivElement>(null)
+
+  const { progress } = useProgress()
+  const xpInfo = progress ? getXPProgress(progress.xp) : { current: 0, required: 2000, percentage: 0 }
+  const rank = progress ? getRank(progress.level) : null
 
   const [isMobile, setIsMobile] = useState(
     () => typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches
@@ -117,8 +124,8 @@ export function Sidebar() {
             </Avatar>
           </div>
           <div ref={userInfoRef} className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">Scholar</p>
-            <p className="text-xs text-text-tertiary">Level 7</p>
+            <p className="text-sm font-medium truncate">{rank?.title ?? "Scholar"}</p>
+            <p className="text-xs text-text-tertiary">Level {progress?.level ?? 1}</p>
           </div>
           <div ref={settingsRef} className="shrink-0">
             <Settings className="h-4 w-4 text-text-tertiary hover:text-foreground cursor-pointer transition-colors" />
@@ -126,10 +133,10 @@ export function Sidebar() {
         </div>
         <div ref={xpBarRef} className="overflow-hidden">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs text-text-tertiary">1,240 XP</span>
-            <span className="text-xs text-gamified font-medium">2,000</span>
+            <span className="text-xs text-text-tertiary">{xpInfo.current.toLocaleString()} XP</span>
+            <span className="text-xs text-gamified font-medium">{xpInfo.required.toLocaleString()}</span>
           </div>
-          <Progress value={62} className="h-1.5" />
+          <Progress value={xpInfo.percentage} className="h-1.5" />
         </div>
       </div>
     </aside>

@@ -17,6 +17,9 @@ import { XPAnimationContainer } from "@/components/features/xp-animation"
 import { AchievementUnlock } from "@/components/features/achievement-unlock"
 import { LenisProvider } from "@/components/features/lenis-provider"
 import { useDashboardStore } from "@/store/use-dashboard-store"
+import { useProgress } from "@/hooks/use-progress"
+import { getRank } from "@/lib/ranks"
+import { getXPProgress } from "@/lib/xp"
 import { cn } from "@/lib/utils"
 
 const navItems = [
@@ -37,6 +40,10 @@ export default function DashboardLayout({
   const mainRef = useRef<HTMLElement>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
+
+  const { progress: mobileProgress } = useProgress()
+  const mobileXPInfo = mobileProgress ? getXPProgress(mobileProgress.xp) : { current: 0, required: 2000, percentage: 0 }
+  const mobileRank = mobileProgress ? getRank(mobileProgress.level) : null
 
   const [isMobile, setIsMobile] = useState(
     () => typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches
@@ -185,17 +192,17 @@ export default function DashboardLayout({
                       </Avatar>
                     </motion.div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-base font-medium truncate">Scholar</p>
-                      <p className="text-sm text-text-tertiary">Level 7</p>
+                      <p className="text-base font-medium truncate">{mobileRank?.title ?? "Scholar"}</p>
+                      <p className="text-sm text-text-tertiary">Level {mobileProgress?.level ?? 1}</p>
                     </div>
                     <Settings className="h-5 w-5 text-text-tertiary" />
                   </div>
                   <div className="mt-4 mb-2">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-text-tertiary">1,240 XP</span>
-                      <span className="text-sm text-gamified font-medium">2,000</span>
+                      <span className="text-sm text-text-tertiary">{mobileXPInfo.current.toLocaleString()} XP</span>
+                      <span className="text-sm text-gamified font-medium">{mobileXPInfo.required.toLocaleString()}</span>
                     </div>
-                    <Progress value={62} className="h-2" />
+                    <Progress value={mobileXPInfo.percentage} className="h-2" />
                   </div>
                 </motion.div>
               </motion.div>
