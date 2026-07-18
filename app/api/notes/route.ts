@@ -7,7 +7,14 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const body = await request.json()
-  const note = await db.note.create({ data: body })
-  return NextResponse.json(note, { status: 201 })
+  try {
+    const body = await request.json()
+    if (!body.title?.trim()) {
+      return NextResponse.json({ error: "Title is required" }, { status: 400 })
+    }
+    const note = await db.note.create({ data: body })
+    return NextResponse.json(note, { status: 201 })
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
+  }
 }

@@ -7,7 +7,17 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const body = await request.json()
-  const task = await db.task.create({ data: body })
-  return NextResponse.json(task, { status: 201 })
+  try {
+    const body = await request.json()
+    if (!body.title?.trim()) {
+      return NextResponse.json({ error: "Title is required" }, { status: 400 })
+    }
+    if (body.priority && !["low", "medium", "high"].includes(body.priority)) {
+      return NextResponse.json({ error: "Priority must be low, medium, or high" }, { status: 400 })
+    }
+    const task = await db.task.create({ data: body })
+    return NextResponse.json(task, { status: 201 })
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
+  }
 }

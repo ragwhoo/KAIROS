@@ -1,10 +1,36 @@
-import { streamText, tool, convertToModelMessages, isStepCount } from "ai"
+import { streamText, tool, isStepCount, type ModelMessage } from "ai"
 import { z } from "zod"
 import { model } from "@/lib/ai"
 import { db } from "@/lib/db"
+import { rateLimit } from "@/lib/rate-limit"
+import { NextResponse } from "next/server"
+
+function extractText(part: unknown): string {
+  if (typeof part === "string") return part
+  if (part && typeof part === "object" && "text" in part) return String((part as { text: string }).text)
+  return ""
+}
+
+function toCoreMessages(raw: unknown[]): ModelMessage[] {
+  return raw.map((m: any) => {
+    const role = m?.role ?? "user"
+    const parts = m?.parts ?? []
+    const text = Array.isArray(parts)
+      ? parts.map(extractText).join("")
+      : String(m?.content ?? "")
+    return { role, content: text } as ModelMessage
+  })
+}
 
 export async function POST(request: Request) {
-  const { messages } = await request.json()
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
+  const { allowed, remaining } = rateLimit(ip, 20, 60000)
+  if (!allowed) {
+    return NextResponse.json({ error: "Too many requests. Try again in a minute." }, { status: 429, headers: { "X-RateLimit-Remaining": "0" } })
+  }
+
+  const body = await request.json()
+  const messages = toCoreMessages(body?.messages ?? [])
 
   const result = streamText({
     model,
@@ -28,8 +54,8 @@ Always confirm what you created and include a clickable link:
 - For events: "[View in Calendar](/calendar)"
 - For notes: "[View in Notes](/notes)"
 
-Be concise, friendly, and encouraging. Use a dark/premium aesthetic tone. Don't ask permission — just create and confirm.`,
-    messages: await convertToModelMessages(messages),
+Be concise, friendly, and encouraging. Use a dark/premium aesthetic tone. Never ask permission — just create, confirm in one short line, and stop. If there's nothing to update, respond generically in one sentence.`,
+    messages,
     tools: {
       getTasks: tool({
         description: "Get all tasks for the user",

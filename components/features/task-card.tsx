@@ -18,14 +18,14 @@ interface TaskCardProps {
 
 function getPriorityMeta(priority: string, status: string) {
   if (status === "done")
-    return { border: "border-l-[#C6FF33]", badge: "success" as const, label: "Done" }
+    return { accent: "from-[#7D39EB] to-[#C6FF33] opacity-30", badge: "success" as const, label: "Done" }
   switch (priority) {
     case "high":
-      return { border: "border-l-[#FF3B5C]", badge: "danger" as const, label: "Urgent" }
+      return { accent: "from-[#7D39EB] to-[#C6FF33]", badge: "danger" as const, label: "Urgent" }
     case "medium":
-      return { border: "border-l-[#FF9F0A]", badge: "warning" as const, label: "Caution" }
+      return { accent: "from-[#7D39EB] to-[#C6FF33]", badge: "warning" as const, label: "Caution" }
     default:
-      return { border: "border-l-[#7D39EB]", badge: "focus" as const, label: "Focus" }
+      return { accent: "from-[#7D39EB] to-[#C6FF33]", badge: "focus" as const, label: "Focus" }
   }
 }
 
@@ -43,7 +43,7 @@ export function TaskCard({ task, onMutate }: TaskCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
   const isAnimatingRef = useRef(false)
-  const { border, badge, label } = getPriorityMeta(task.priority, task.status)
+  const { accent, badge, label } = getPriorityMeta(task.priority, task.status)
   const due = formatDueDate(task.dueDate)
 
   const handleToggle = async () => {
@@ -106,11 +106,11 @@ export function TaskCard({ task, onMutate }: TaskCardProps) {
       <div
         ref={cardRef}
         className={cn(
-          "group relative rounded-2xl bg-surface-1 border border-border border-l-[3px] p-4 transition-colors duration-200 hover:border-primary-100 overflow-hidden",
-          border,
+          "group relative rounded-2xl bg-surface-1 border border-border p-4 transition-colors duration-200 hover:border-primary-100 overflow-hidden",
           isCompleted && "opacity-60"
         )}
       >
+        <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-[#7D39EB] to-[#C6FF33] z-10" />
         <div
           ref={overlayRef}
           className="absolute inset-0 z-20 pointer-events-none bg-[#C6FF33]"

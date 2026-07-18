@@ -6,9 +6,13 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-  const body = await request.json()
-  const task = await db.task.update({ where: { id }, data: body })
-  return NextResponse.json(task)
+  try {
+    const body = await request.json()
+    const task = await db.task.update({ where: { id }, data: body })
+    return NextResponse.json(task)
+  } catch {
+    return NextResponse.json({ error: "Task not found" }, { status: 404 })
+  }
 }
 
 export async function DELETE(
@@ -16,6 +20,10 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-  await db.task.delete({ where: { id } })
-  return NextResponse.json({ success: true })
+  try {
+    await db.task.delete({ where: { id } })
+    return NextResponse.json({ success: true })
+  } catch {
+    return NextResponse.json({ error: "Task not found" }, { status: 404 })
+  }
 }
