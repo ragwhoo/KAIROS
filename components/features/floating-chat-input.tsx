@@ -26,8 +26,25 @@ export function FloatingChatInput() {
 
   const startRecording = useCallback(async () => {
     setMicFailed(false)
+
+    if (navigator.permissions) {
+      try {
+        const status = await navigator.permissions.query({ name: "microphone" as PermissionName })
+        console.log("[Voice] mic permission state:", status.state)
+        if (status.state === "denied") {
+          console.log("[Voice] mic permanently denied")
+          setMicFailed(true)
+          setTimeout(() => setMicFailed(false), 8000)
+          return
+        }
+      } catch (permErr) {
+        console.log("[Voice] perm query failed:", permErr)
+      }
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      console.log("[Voice] getUserMedia succeeded")
       streamRef.current = stream
 
       const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
@@ -56,12 +73,14 @@ export function FloatingChatInput() {
 
           const res = await fetch("/api/transcribe", { method: "POST", body: fd })
           const data = await res.json()
+          console.log("[Voice] transcribe response:", data)
           if (data.text) {
             setInput(data.text)
           } else {
             setMicFailed(true)
           }
-        } catch {
+        } catch (err) {
+          console.log("[Voice] transcribe fetch error:", err)
           setMicFailed(true)
         } finally {
           setIsTranscribing(false)
@@ -71,9 +90,10 @@ export function FloatingChatInput() {
       recorder.start()
       recorderRef.current = recorder
       setIsRecording(true)
-    } catch {
+    } catch (err) {
+      console.log("[Voice] getUserMedia error:", err)
       setMicFailed(true)
-      setTimeout(() => setMicFailed(false), 5000)
+      setTimeout(() => setMicFailed(false), 8000)
     }
   }, [])
 
