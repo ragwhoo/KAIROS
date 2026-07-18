@@ -83,76 +83,70 @@ export default function DashboardLayout({
             <Menu className="h-5 w-5" />
           </button>
 
-          {/* Mobile nav overlay */}
+          {/* Mobile full-screen nav */}
           {mobileMenuOpen && (
-            <div className="fixed inset-0 z-50 md:hidden">
-              <div
-                className="absolute inset-0 bg-black/60"
-                onClick={() => setMobileMenuOpen(false)}
-              />
-              <div className="absolute left-0 top-0 bottom-0 w-[280px] bg-background border-r border-border flex flex-col">
-                <div className="flex items-center justify-between px-4 pt-6 pb-5">
-                  <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#7D39EB] to-[#C6FF33] text-sm font-bold text-black">
-                      K
-                    </div>
-                    <span className="text-lg font-bold tracking-tight">Kairos</span>
+            <div className="fixed inset-0 z-50 md:hidden bg-background flex flex-col px-6 py-8">
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#7D39EB] to-[#C6FF33] text-lg font-bold text-black">
+                    K
                   </div>
-                  <button
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex h-7 w-7 items-center justify-center rounded-lg text-text-tertiary hover:text-foreground hover:bg-surface-1 transition-colors"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
+                  <span className="text-xl font-bold tracking-tight">Kairos</span>
                 </div>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex h-10 w-10 items-center justify-center rounded-xl text-text-tertiary hover:text-foreground hover:bg-surface-1 transition-colors"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
 
-                <Separator className="mx-4 w-auto" />
+              <Separator className="w-auto mb-6" />
 
-                <nav className="flex-1 space-y-1 px-2 py-4">
-                  {navItems.map((item) => {
-                    const active = pathname === item.href
-                    return (
-                      <button
-                        key={item.href}
-                        onClick={() => handleNav(item.href)}
-                        className={cn(
-                          "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all",
-                          active
-                            ? "bg-primary-100 text-primary"
-                            : "text-text-secondary hover:text-foreground hover:bg-surface-1"
-                        )}
-                      >
-                        <item.icon className="h-5 w-5 shrink-0" />
-                        <span>{item.label}</span>
-                        {active && (
-                          <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary" />
-                        )}
-                      </button>
-                    )
-                  })}
-                </nav>
+              <nav className="flex-1 space-y-1">
+                {navItems.map((item) => {
+                  const active = pathname === item.href
+                  return (
+                    <button
+                      key={item.href}
+                      onClick={() => handleNav(item.href)}
+                      className={cn(
+                        "flex w-full items-center gap-4 rounded-2xl px-4 py-4 text-base font-medium transition-all",
+                        active
+                          ? "bg-primary-100 text-primary"
+                          : "text-text-secondary hover:text-foreground hover:bg-surface-1"
+                      )}
+                    >
+                      <item.icon className={cn("h-6 w-6 shrink-0", active && "text-primary")} />
+                      <span>{item.label}</span>
+                      {active && (
+                        <div className="ml-auto h-2 w-2 rounded-full bg-primary" />
+                      )}
+                    </button>
+                  )
+                })}
+              </nav>
 
-                <div className="border-t border-border pt-4 px-4 pb-2">
-                  <div className="flex items-center gap-3">
-                    <div className="rounded-full bg-gradient-to-br from-[#7D39EB] to-[#C6FF33] p-[2px] shrink-0">
-                      <Avatar className="h-9 w-9">
-                        <AvatarFallback className="bg-black text-xs text-white">R</AvatarFallback>
-                      </Avatar>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">Scholar</p>
-                      <p className="text-xs text-text-tertiary">Level 7</p>
-                    </div>
-                    <Settings className="h-4 w-4 text-text-tertiary shrink-0" />
-                  </div>
-                  <div className="mt-3">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-xs text-text-tertiary">1,240 XP</span>
-                      <span className="text-xs text-gamified font-medium">2,000</span>
-                    </div>
-                    <Progress value={62} className="h-1.5" />
-                  </div>
+              <Separator className="w-auto mb-6" />
+
+              <div className="flex items-center gap-3">
+                <div className="rounded-full bg-gradient-to-br from-[#7D39EB] to-[#C6FF33] p-[2px] shrink-0">
+                  <Avatar className="h-11 w-11">
+                    <AvatarFallback className="bg-black text-sm text-white">R</AvatarFallback>
+                  </Avatar>
                 </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-base font-medium truncate">Scholar</p>
+                  <p className="text-sm text-text-tertiary">Level 7</p>
+                </div>
+                <Settings className="h-5 w-5 text-text-tertiary" />
+              </div>
+              <div className="mt-4 mb-2">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-text-tertiary">1,240 XP</span>
+                  <span className="text-sm text-gamified font-medium">2,000</span>
+                </div>
+                <Progress value={62} className="h-2" />
               </div>
             </div>
           )}
