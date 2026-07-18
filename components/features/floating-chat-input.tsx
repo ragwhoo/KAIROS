@@ -61,19 +61,26 @@ export function FloatingChatInput() {
     }
   }, [isListening])
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("[Chat] handleSubmit called, input:", input, "isLoading:", isLoading)
-    if (!input.trim() || isLoading) return
-    console.log("[Chat] calling sendMessage with:", input)
-    sendMessage({ text: input })
+  const send = useCallback(() => {
+    const text = input.trim()
+    console.log("[Chat] send() called, text:", text, "isLoading:", isLoading)
+    if (!text || isLoading) return
+    console.log("[Chat] calling sendMessage")
+    sendMessage({ text })
     setInput("")
+  }, [input, isLoading, sendMessage])
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault()
+      console.log("[Chat] Enter keyDown")
+      send()
+    }
   }
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-full max-w-[560px] px-4">
-      <form
-        onSubmit={handleSubmit}
+      <div
         className={cn(
           "flex items-center gap-2 rounded-2xl border border-border bg-surface-1/95 backdrop-blur-xl px-4 py-2.5 shadow-2xl transition-colors",
           isLoading && "border-primary-100",
@@ -86,6 +93,7 @@ export function FloatingChatInput() {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder={
             isListening ? "Listening..." : isLoading ? "Kairos is thinking..." : "Ask Kairos anything..."
           }
@@ -94,7 +102,7 @@ export function FloatingChatInput() {
         {supported && (
           <button
             type="button"
-            onClick={toggleListening}
+            onClick={() => toggleListening()}
             className={cn(
               "shrink-0 flex h-8 w-8 items-center justify-center rounded-lg transition-all",
               isListening
@@ -106,16 +114,15 @@ export function FloatingChatInput() {
             {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
           </button>
         )}
-        <Button
-          type="submit"
-          variant="primary"
-          size="icon"
+        <button
+          type="button"
+          onClick={() => { console.log("[Chat] send button clicked"); send() }}
           disabled={isLoading || !input.trim()}
-          className="shrink-0 h-8 w-8"
+          className="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white disabled:opacity-40 transition-opacity"
         >
           <Send className="h-4 w-4" />
-        </Button>
-      </form>
+        </button>
+      </div>
     </div>
   )
 }
