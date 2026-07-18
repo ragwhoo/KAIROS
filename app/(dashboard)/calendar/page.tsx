@@ -62,7 +62,7 @@ export default function CalendarPage() {
 
   return (
     <PageTransition>
-      <div className="px-10 pt-20 pb-28">
+      <div className="px-4 sm:px-6 lg:px-10 pt-16 sm:pt-20 pb-20 sm:pb-28">
         <div className="flex items-center gap-3 mb-10">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#7D39EB] to-[#C6FF33]">
             <CalendarIcon className="h-5 w-5 text-black" />
@@ -102,7 +102,7 @@ export default function CalendarPage() {
         <div className="rounded-2xl border border-border overflow-hidden">
           <div className="grid grid-cols-7 border-b border-border">
             {weekDays.map((day) => (
-              <div key={day} className="p-3 text-center text-xs font-medium text-text-tertiary">
+              <div key={day} className="p-2 md:p-3 text-center text-[11px] md:text-xs font-medium text-text-tertiary">
                 {day}
               </div>
             ))}
@@ -122,7 +122,7 @@ export default function CalendarPage() {
                     setShowAddForm(true)
                   }}
                   className={cn(
-                    "min-h-20 p-2 border-b border-r border-border text-left transition-colors hover:bg-surface-1",
+                    "min-h-12 md:min-h-20 p-1 md:p-2 border-b border-r border-border text-left transition-colors hover:bg-surface-1",
                     !inCurrentMonth && "opacity-30",
                     isTodayCell && "bg-primary-50",
                     isSelected && "ring-1 ring-primary ring-inset"
@@ -229,7 +229,7 @@ export default function CalendarPage() {
                       await deleteEvent(event.id)
                       mutate()
                     }}
-                    className="opacity-0 group-hover:opacity-100 flex h-7 w-7 items-center justify-center rounded-lg text-text-tertiary hover:text-destructive hover:bg-destructive/10 transition-all"
+                    className="md:opacity-0 md:group-hover:opacity-100 flex h-7 w-7 items-center justify-center rounded-lg text-text-tertiary hover:text-destructive hover:bg-destructive/10 transition-all"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>

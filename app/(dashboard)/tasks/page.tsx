@@ -22,7 +22,7 @@ export default function TasksPage() {
 
   return (
     <PageTransition>
-      <div className="px-10 pt-20 pb-28">
+      <div className="px-4 sm:px-6 lg:px-10 pt-16 sm:pt-20 pb-20 sm:pb-28">
         <div className="flex items-center gap-3 mb-10">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#7D39EB] to-[#C6FF33]">
             <ListTodo className="h-5 w-5 text-black" />

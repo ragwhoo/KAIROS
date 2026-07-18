@@ -75,7 +75,7 @@ export default function NotesPage() {
 
   return (
     <PageTransition>
-      <div className="px-10 pt-20 pb-28">
+      <div className="px-4 sm:px-6 lg:px-10 pt-16 sm:pt-20 pb-20 sm:pb-28">
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#7D39EB] to-[#C6FF33]">
@@ -125,7 +125,7 @@ export default function NotesPage() {
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   placeholder="Subject (optional)"
-                  className="border-0 bg-surface-2 w-48"
+                  className="border-0 bg-surface-2 w-full sm:w-48"
                 />
                 <textarea
                   value={content}

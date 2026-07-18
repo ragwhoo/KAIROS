@@ -66,7 +66,7 @@ export default function AIPage() {
 
   return (
     <PageTransition>
-      <div className="px-10 pt-20 pb-28 h-screen flex flex-col">
+      <div className="px-4 sm:px-6 lg:px-10 pt-16 sm:pt-20 pb-20 sm:pb-28 h-screen flex flex-col">
         <div className="flex-1 flex flex-col min-h-0 max-w-4xl mx-auto w-full">
           <div
             ref={scrollRef}

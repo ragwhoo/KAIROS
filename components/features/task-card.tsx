@@ -160,7 +160,7 @@ export function TaskCard({ task, onMutate }: TaskCardProps) {
           </div>
           <button
             onClick={handleDelete}
-            className="opacity-0 group-hover:opacity-100 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-text-tertiary hover:text-destructive hover:bg-destructive/10 transition-all"
+            className="md:opacity-0 md:group-hover:opacity-100 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-text-tertiary hover:text-destructive hover:bg-destructive/10 transition-all"
           >
             <Trash2 className="h-3.5 w-3.5" />
           </button>

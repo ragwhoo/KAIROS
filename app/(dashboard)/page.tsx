@@ -31,7 +31,7 @@ export default function HomePage() {
 
   return (
     <PageTransition>
-      <div className="px-10 pt-20 pb-28">
+      <div className="px-4 sm:px-6 lg:px-10 pt-16 sm:pt-20 pb-20 sm:pb-28">
         <GreetingHeader />
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
