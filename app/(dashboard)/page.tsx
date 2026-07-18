@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
 import { PageTransition } from "@/components/features/page-transition"
 import { GreetingHeader } from "@/components/features/greeting-header"
@@ -10,12 +11,15 @@ import { Heatmap } from "@/components/features/heatmap"
 import { SkillTree } from "@/components/features/skill-tree"
 import { TaskList } from "@/components/features/task-list"
 import { AddTaskButton } from "@/components/features/add-task-button"
+import { FocusSession } from "@/components/features/focus-session"
 import { useTasks } from "@/hooks/use-tasks"
 import { useCalendarEvents } from "@/hooks/use-calendar-events"
 import { Calendar, CheckCircle, Clock, Flame } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { isToday, format } from "date-fns"
 
 export default function HomePage() {
+  const [focusOpen, setFocusOpen] = useState(false)
   const { tasks, mutate } = useTasks()
   const { events } = useCalendarEvents()
 
@@ -52,6 +56,18 @@ export default function HomePage() {
               <p className="text-xs text-text-tertiary">{stat.label}</p>
             </motion.div>
           ))}
+        </div>
+
+        <div className="flex justify-end mb-6">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setFocusOpen(true)}
+            className="gap-2"
+          >
+            <Clock className="h-4 w-4" />
+            Focus
+          </Button>
         </div>
 
         <div className="space-y-12">
@@ -109,6 +125,8 @@ export default function HomePage() {
           )}
         </div>
       </div>
+
+      <FocusSession open={focusOpen} onClose={() => setFocusOpen(false)} />
     </PageTransition>
   )
 }
