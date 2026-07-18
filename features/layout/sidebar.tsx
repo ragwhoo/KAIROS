@@ -40,10 +40,6 @@ export function Sidebar() {
     return () => mql.removeEventListener("change", handler)
   }, [])
 
-  // On mobile, render nothing — MobileNav in layout handles it
-  if (isMobile) return null
-
-  // Desktop sidebar
   useLayoutEffect(() => {
     const hidden = !sidebarOpen
     gsap.set(brandTextRef.current, { opacity: hidden ? 0 : 1, x: hidden ? -10 : 0 })
@@ -77,6 +73,8 @@ export function Sidebar() {
       gsap.to(settingsRef.current, { opacity: 0, x: 20, duration: 0.2, ease: "power2.in", delay: 0.05 })
     }
   }, [sidebarOpen])
+
+  if (isMobile) return null
 
   return (
     <aside
