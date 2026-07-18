@@ -11,6 +11,7 @@ export function FloatingChatInput() {
   const [input, setInput] = useState("")
   const [isListening, setIsListening] = useState(false)
   const [supported, setSupported] = useState(true)
+  const [micFailed, setMicFailed] = useState(false)
   const recognitionRef = useRef<any>(null)
   const isLoading = status === "submitted" || status === "streaming"
 
@@ -23,11 +24,12 @@ export function FloatingChatInput() {
       return
     }
     const recognition = new SpeechRecognition()
-    recognition.continuous = false
+    recognition.continuous = true
     recognition.interimResults = true
     recognition.lang = "en-US"
 
     recognition.onresult = (event: any) => {
+      setMicFailed(false)
       const transcript = Array.from(event.results)
         .map((r: any) => r[0].transcript)
         .join("")
@@ -40,21 +42,49 @@ export function FloatingChatInput() {
       setIsListening(false)
     }
 
+    let networkRetries = 0
+
     recognition.onerror = (event: any) => {
       console.log("[Voice] onerror:", event.error, event.message)
+      if (event.error === "network" && networkRetries < 1) {
+        networkRetries++
+        console.log("[Voice] network error, retrying once...")
+        setTimeout(() => recognition.start(), 300)
+        return
+      }
+      if (event.error === "network") {
+        setMicFailed(true)
+        setTimeout(() => setMicFailed(false), 8000)
+      }
+      setIsListening(false)
+    }
+
+    recognition.onend = () => {
+      console.log("[Voice] onend fired")
       setIsListening(false)
     }
 
     recognitionRef.current = recognition
   }, [])
 
-  const toggleListening = useCallback(() => {
+  const toggleListening = useCallback(async () => {
     if (!recognitionRef.current) return
     if (isListening) {
       console.log("[Voice] stopping")
       recognitionRef.current.stop()
       setIsListening(false)
     } else {
+      setMicFailed(false)
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+        stream.getTracks().forEach((t) => t.stop())
+        console.log("[Voice] mic permission granted")
+      } catch {
+        console.log("[Voice] mic permission denied")
+        setMicFailed(true)
+        setTimeout(() => setMicFailed(false), 5000)
+        return
+      }
       console.log("[Voice] starting")
       recognitionRef.current.start()
       setIsListening(true)
@@ -123,6 +153,11 @@ export function FloatingChatInput() {
           <Send className="h-4 w-4" />
         </button>
       </div>
+      {micFailed && (
+        <p className="mt-1.5 text-center text-xs text-red-400">
+          Voice blocked by browser. Try incognito mode or disable adblockers.
+        </p>
+      )}
     </div>
   )
 }
