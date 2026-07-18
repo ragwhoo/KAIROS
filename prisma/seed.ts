@@ -46,6 +46,15 @@ async function main() {
     ],
   })
 
+  await prisma.userProgress.create({
+    data: {
+      level: 1,
+      xp: 0,
+      currentStreak: 0,
+      longestStreak: 0,
+    },
+  })
+
   console.log("Seed data inserted successfully")
 }
 
