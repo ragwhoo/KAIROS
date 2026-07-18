@@ -9,6 +9,11 @@ async function main() {
   await prisma.task.deleteMany()
   await prisma.note.deleteMany()
   await prisma.calendarEvent.deleteMany()
+  await prisma.xPEvent.deleteMany()
+  await prisma.achievement.deleteMany()
+  await prisma.dailyMission.deleteMany()
+  await prisma.focusSession.deleteMany()
+  await prisma.reflection.deleteMany()
 
   const now = new Date()
   const tomorrow = new Date(now)
@@ -46,6 +51,7 @@ async function main() {
     ],
   })
 
+  await prisma.userProgress.deleteMany()
   await prisma.userProgress.create({
     data: {
       level: 1,
