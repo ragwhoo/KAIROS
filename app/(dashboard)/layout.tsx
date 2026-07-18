@@ -14,6 +14,7 @@ import { ChatProvider } from "@/components/features/chat-provider"
 import { FloatingChatInput } from "@/components/features/floating-chat-input"
 import { ChatToast } from "@/components/features/chat-toast"
 import { XPAnimationContainer } from "@/components/features/xp-animation"
+import { AchievementUnlock } from "@/components/features/achievement-unlock"
 import { LenisProvider } from "@/components/features/lenis-provider"
 import { useDashboardStore } from "@/store/use-dashboard-store"
 import { cn } from "@/lib/utils"
@@ -208,6 +209,7 @@ export default function DashboardLayout({
         <FloatingChatInput />
         <ChatToast />
         <XPAnimationContainer />
+        <AchievementUnlock />
       </ChatProvider>
     </LenisProvider>
   )
