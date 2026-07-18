@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
+import { useRouter } from "next/navigation"
 import { Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useDashboardStore } from "@/store/use-dashboard-store"
@@ -8,6 +9,7 @@ import { useTasks } from "@/hooks/use-tasks"
 import { useCalendarEvents } from "@/hooks/use-calendar-events"
 
 export function AIWidget() {
+  const router = useRouter()
   const setPendingChatMessage = useDashboardStore((s) => s.setPendingChatMessage)
   const { tasks } = useTasks()
   const { events } = useCalendarEvents()
@@ -73,7 +75,10 @@ export function AIWidget() {
           <Button
             variant="primary"
             size="sm"
-            onClick={() => setPendingChatMessage(suggestion.action)}
+            onClick={() => {
+              setPendingChatMessage(suggestion.action)
+              router.push("/ai")
+            }}
           >
             {suggestion.buttons[0]}
           </Button>

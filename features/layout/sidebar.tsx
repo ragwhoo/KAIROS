@@ -44,7 +44,10 @@ export function Sidebar() {
 
   // Desktop: initial GSAP set
   useLayoutEffect(() => {
-    if (isMobile) return
+    if (isMobile) {
+      gsap.set(asideRef.current, { x: sidebarOpen ? 0 : "-100%" })
+      return
+    }
     const hidden = !sidebarOpen
     gsap.set(brandTextRef.current, { opacity: hidden ? 0 : 1, x: hidden ? -10 : 0 })
     gsap.set(closeBtnRef.current, { opacity: hidden ? 0 : 1, x: hidden ? 10 : 0 })

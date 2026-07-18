@@ -1,10 +1,12 @@
 "use client"
 
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState, useCallback } from "react"
 import gsap from "gsap"
-import { Sparkles, User } from "lucide-react"
+import { Sparkles, User, Bookmark, Check } from "lucide-react"
 import { PageTransition } from "@/components/features/page-transition"
 import { useChatContext } from "@/components/features/chat-provider"
+import { useDashboardStore } from "@/store/use-dashboard-store"
+import { createNote } from "@/hooks/use-notes"
 import { cn } from "@/lib/utils"
 
 const suggestions = [
@@ -56,6 +58,9 @@ function renderLinks(text: string): React.ReactNode[] {
 export default function AIPage() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const { messages, sendMessage, status } = useChatContext()
+  const pendingChatMessage = useDashboardStore((s) => s.pendingChatMessage)
+  const setPendingChatMessage = useDashboardStore((s) => s.setPendingChatMessage)
+  const sentRef = useRef(false)
   const isLoading = status === "submitted" || status === "streaming"
 
   useEffect(() => {
@@ -63,6 +68,17 @@ export default function AIPage() {
       gsap.to(scrollRef.current, { scrollTop: scrollRef.current.scrollHeight, duration: 0.3 })
     }
   }, [messages])
+
+  useEffect(() => {
+    if (pendingChatMessage && !sentRef.current) {
+      sentRef.current = true
+      sendMessage({ text: pendingChatMessage })
+      setPendingChatMessage(null)
+    }
+    if (!pendingChatMessage) {
+      sentRef.current = false
+    }
+  }, [pendingChatMessage, sendMessage, setPendingChatMessage])
 
   return (
     <PageTransition>
@@ -98,37 +114,41 @@ export default function AIPage() {
               </div>
             ) : (
               messages.map((msg) => (
-                <div
-                  key={msg.id}
-                  className={cn(
-                    "flex gap-3",
-                    msg.role === "user" && "flex-row-reverse"
-                  )}
-                >
-                  {msg.role === "assistant" ? (
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#7D39EB] to-[#C6FF33]">
-                      <Sparkles className="h-4 w-4 text-black" />
-                    </div>
-                  ) : (
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-2">
-                      <User className="h-4 w-4 text-text-secondary" />
-                    </div>
-                  )}
+                <div key={msg.id}>
                   <div
                     className={cn(
-                      "rounded-2xl px-4 py-3 max-w-[75%] text-sm leading-relaxed whitespace-pre-wrap",
-                      msg.role === "user"
-                        ? "bg-primary text-white"
-                        : "bg-surface-1 border border-border text-[rgba(255,255,255,0.9)]"
+                      "flex gap-3",
+                      msg.role === "user" && "flex-row-reverse"
                     )}
                   >
-                    {(() => {
-                      const text = getMessageText(msg.parts)
-                      if (!text && isLoading && msg.role === "assistant") return "..."
-                      if (!text) return ""
-                      return renderLinks(text)
-                    })()}
+                    {msg.role === "assistant" ? (
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#7D39EB] to-[#C6FF33]">
+                        <Sparkles className="h-4 w-4 text-black" />
+                      </div>
+                    ) : (
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-2">
+                        <User className="h-4 w-4 text-text-secondary" />
+                      </div>
+                    )}
+                    <div
+                      className={cn(
+                        "rounded-2xl px-4 py-3 max-w-[75%] text-sm leading-relaxed whitespace-pre-wrap",
+                        msg.role === "user"
+                          ? "bg-primary text-white"
+                          : "bg-surface-1 border border-border text-[rgba(255,255,255,0.9)]"
+                      )}
+                    >
+                      {(() => {
+                        const text = getMessageText(msg.parts)
+                        if (!text && isLoading && msg.role === "assistant") return "..."
+                        if (!text) return ""
+                        return renderLinks(text)
+                      })()}
+                    </div>
                   </div>
+                  {msg.role === "assistant" && !isLoading && (
+                    <SaveNoteButton messageId={msg.id} text={getMessageText(msg.parts)} />
+                  )}
                 </div>
               ))
             )}
@@ -136,5 +156,41 @@ export default function AIPage() {
         </div>
       </div>
     </PageTransition>
+  )
+}
+
+function SaveNoteButton({ messageId, text }: { messageId: string; text: string }) {
+  const [saved, setSaved] = useState(false)
+
+  const handleSave = useCallback(async () => {
+    if (!text.trim() || saved) return
+    try {
+      const title = text.split("\n")[0]?.slice(0, 60) || "Chat note"
+      await createNote({ title, content: text })
+      setSaved(true)
+    } catch {
+      // silently fail
+    }
+  }, [text, saved])
+
+  if (!text.trim()) return null
+
+  return (
+    <button
+      onClick={handleSave}
+      className="ml-11 mt-1.5 flex items-center gap-1.5 text-[11px] text-text-tertiary hover:text-primary transition-colors"
+    >
+      {saved ? (
+        <>
+          <Check className="h-3 w-3 text-gamified" />
+          <span className="text-gamified">Saved to Notes</span>
+        </>
+      ) : (
+        <>
+          <Bookmark className="h-3 w-3" />
+          <span>Take Notes</span>
+        </>
+      )}
+    </button>
   )
 }
