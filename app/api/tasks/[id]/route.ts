@@ -22,8 +22,8 @@ export async function DELETE(
   const { id } = await params
   try {
     await db.task.delete({ where: { id } })
-    return NextResponse.json({ success: true })
   } catch {
-    return NextResponse.json({ error: "Task not found" }, { status: 404 })
+    // already deleted — idempotent
   }
+  return NextResponse.json({ success: true })
 }
