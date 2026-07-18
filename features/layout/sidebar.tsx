@@ -7,7 +7,6 @@ import {
   Calendar,
   ListTodo,
   Notebook,
-  Sparkles,
   BarChart3,
   Settings,
   PanelLeftClose,
@@ -23,7 +22,6 @@ const navItems = [
   { icon: ListTodo, label: "Today", href: "/today" },
   { icon: Calendar, label: "Calendar", href: "/calendar" },
   { icon: Notebook, label: "Notes", href: "/notes" },
-  { icon: Sparkles, label: "AI Assistant", href: "/ai" },
   { icon: BarChart3, label: "Overview", href: "/overview" },
 ]
 
