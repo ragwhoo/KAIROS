@@ -5,4 +5,4 @@ export const openrouter = createOpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
 })
 
-export const model = openrouter.chat("google/gemini-2.0-flash-exp:free")
+export const model = openrouter.chat("openrouter/free")
