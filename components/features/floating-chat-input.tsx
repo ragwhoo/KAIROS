@@ -91,16 +91,7 @@ export function FloatingChatInput() {
     }
   }, [isListening, micStatus])
 
-  useEffect(() => {
-    const r = recognitionRef.current
-    if (!r) return
-    const handler = () => {
-      console.log("[Voice] single auto-retry")
-      try { r.start() } catch {}
-    }
-    window.addEventListener("click", handler, { once: true })
-    return () => window.removeEventListener("click", handler)
-  }, [])
+
 
   const send = useCallback(async () => {
     const text = input.trim()
