@@ -6,6 +6,25 @@ import { rateLimit } from "@/lib/rate-limit"
 import { NextResponse } from "next/server"
 import { awardXP } from "@/lib/xp"
 
+export async function GET() {
+  const messages = await db.chatMessage.findMany({ orderBy: { createdAt: "asc" } })
+  return NextResponse.json(messages)
+}
+
+export async function PUT(request: Request) {
+  try {
+    const body = await request.json()
+    const { role, content } = body
+    if (!role || !content) {
+      return NextResponse.json({ error: "role and content required" }, { status: 400 })
+    }
+    const message = await db.chatMessage.create({ data: { role, content } })
+    return NextResponse.json(message, { status: 201 })
+  } catch {
+    return NextResponse.json({ error: "Failed to save message" }, { status: 500 })
+  }
+}
+
 function extractText(part: unknown): string {
   if (typeof part === "string") return part
   if (part && typeof part === "object" && "text" in part) return String((part as { text: string }).text)

@@ -89,6 +89,13 @@ export interface FocusSession {
   createdAt: string
 }
 
+export interface ChatMessage {
+  id: string
+  role: string
+  content: string
+  createdAt: string
+}
+
 export interface Reflection {
   id: string
   wentWell: string

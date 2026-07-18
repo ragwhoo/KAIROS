@@ -95,6 +95,13 @@ model FocusSession {
   createdAt DateTime @default(now())
 }
 
+model ChatMessage {
+  id        String   @id @default(cuid())
+  role      String
+  content   String
+  createdAt DateTime @default(now())
+}
+
 model Reflection {
   id          String   @id @default(cuid())
   wentWell    String
