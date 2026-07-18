@@ -35,11 +35,12 @@ export default function DashboardLayout({
   const router = useRouter()
   const pathname = usePathname()
 
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches
+  )
 
   useEffect(() => {
     const mql = window.matchMedia("(max-width: 767px)")
-    setIsMobile(mql.matches)
     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
     mql.addEventListener("change", handler)
     return () => mql.removeEventListener("change", handler)
@@ -50,9 +51,12 @@ export default function DashboardLayout({
     setMobileMenuOpen(false)
   }, [pathname])
 
-  // Desktop margin animation
   useLayoutEffect(() => {
-    if (!mainRef.current || isMobile) return
+    if (!mainRef.current) return
+    if (isMobile) {
+      gsap.set(mainRef.current, { marginLeft: 0 })
+      return
+    }
     gsap.to(mainRef.current, {
       marginLeft: sidebarOpen ? 240 : 64,
       duration: 0.4,

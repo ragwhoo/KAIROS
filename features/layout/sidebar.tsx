@@ -30,11 +30,12 @@ export function Sidebar() {
   const settingsRef = useRef<HTMLDivElement>(null)
   const xpBarRef = useRef<HTMLDivElement>(null)
 
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches
+  )
 
   useEffect(() => {
     const mql = window.matchMedia("(max-width: 767px)")
-    setIsMobile(mql.matches)
     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
     mql.addEventListener("change", handler)
     return () => mql.removeEventListener("change", handler)
