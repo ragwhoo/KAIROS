@@ -7,6 +7,7 @@ import { AIWidget } from "@/components/features/ai-widget"
 import { ProfileCard } from "@/components/features/profile-card"
 import { DailyMissions } from "@/components/features/daily-missions"
 import { Heatmap } from "@/components/features/heatmap"
+import { SkillTree } from "@/components/features/skill-tree"
 import { TaskList } from "@/components/features/task-list"
 import { AddTaskButton } from "@/components/features/add-task-button"
 import { useTasks } from "@/hooks/use-tasks"
@@ -59,7 +60,10 @@ export default function HomePage() {
             <DailyMissions />
           </div>
 
-          <Heatmap />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+            <Heatmap />
+            <SkillTree />
+          </div>
 
           <AIWidget />
 
