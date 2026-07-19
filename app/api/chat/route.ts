@@ -65,10 +65,24 @@ export async function POST(request: Request) {
 
   console.log("[API/chat] messages:", JSON.stringify(messages).slice(0, 200))
 
+  // Save user message to DB
+  const userMsg = [...messages].reverse().find((m) => m.role === "user")
+  const userContent: string = typeof userMsg?.content === "string" ? userMsg.content : ""
+  if (userContent) {
+    db.chatMessage.create({ data: { role: "user", content: userContent } }).catch(() => {})
+  }
+
   let result
   try {
     result = streamText({
       model,
+      onFinish: async (result) => {
+        const output = result.text
+        const content: string = typeof output === "string" ? output : ""
+        if (content) {
+          db.chatMessage.create({ data: { role: "assistant", content } }).catch(() => {})
+        }
+      },
       stopWhen: isStepCount(2),
       maxOutputTokens: 1200,
       system: `You are Kairos AI, a student-centric productivity assistant. Your job is to automatically manage tasks, schedule events, and take notes from natural conversation — the user should almost never need to create anything manually.

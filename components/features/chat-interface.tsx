@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useRef, useEffect, useMemo } from "react"
+import { useState, useRef, useEffect, useMemo, useCallback } from "react"
 import { Send, Sparkles, ChevronUp } from "lucide-react"
+import gsap from "gsap"
 import { motion, AnimatePresence } from "framer-motion"
 import { useChat } from "@ai-sdk/react"
 import { DefaultChatTransport } from "ai"
@@ -55,11 +56,22 @@ export function ChatInterface() {
 
   const hasMessages = messages.length > 0
 
+  const scrollToBottom = useCallback(() => {
+    if (!scrollRef.current) return
+    const el = scrollRef.current
+    const distance = el.scrollHeight - el.scrollTop - el.clientHeight
+    if (distance <= 0) return
+    gsap.to(el, {
+      scrollTop: el.scrollHeight,
+      duration: Math.min(1.2, 0.4 + distance / 800),
+      ease: "power2.out",
+      overwrite: "auto",
+    })
+  }, [])
+
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
-    }
-  }, [messages])
+    if (messages.length > 0) scrollToBottom()
+  }, [messages, scrollToBottom])
 
   useEffect(() => {
     if (isLoading) setExpanded(true)

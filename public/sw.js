@@ -1,13 +1,9 @@
 const CACHE = "kairos-v1"
 
 const STATIC_ASSETS = [
-  "/",
-  "/ai",
-  "/calendar",
-  "/tasks",
-  "/notes",
-  "/overview",
   "/manifest.json",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
 ]
 
 self.addEventListener("install", (event) => {
@@ -28,7 +24,10 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return
-
+  if (event.request.mode === "navigate") {
+    event.respondWith(fetch(event.request))
+    return
+  }
   event.respondWith(
     caches.match(event.request).then((cached) => {
       const fetchPromise = fetch(event.request)
