@@ -26,13 +26,15 @@ export default function HomePage() {
   const todayTasks = tasks.filter(
     (t) => t.dueDate && isToday(new Date(t.dueDate))
   )
-  const completedCount = tasks.filter((t) => t.status === "done").length
+  const completedTodayCount = tasks.filter(
+    (t) => t.status === "done" && t.completedAt && isToday(new Date(t.completedAt))
+  ).length
   const remainingCount = todayTasks.filter((t) => t.status !== "done").length
   const todayEvents = events.filter((e) => isToday(new Date(e.startTime)))
 
   const stats = [
     { label: "Tasks Remaining", value: String(remainingCount), icon: CheckCircle, color: "text-primary" },
-    { label: "Completed Today", value: String(completedCount), icon: CheckCircle, color: "text-gamified" },
+    { label: "Completed Today", value: String(completedTodayCount), icon: CheckCircle, color: "text-gamified" },
     { label: "Events Today", value: String(todayEvents.length), icon: Calendar, color: "text-primary" },
     { label: "Streak", value: "4 days", icon: Flame, color: "text-gamified" },
   ]

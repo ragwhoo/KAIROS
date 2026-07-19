@@ -1,5 +1,16 @@
 import { NextResponse } from "next/server"
 import { db } from "@/lib/db"
+import { z } from "zod"
+
+const EventUpdate = z.object({
+  title: z.string().min(1).optional(),
+  description: z.string().nullable().optional(),
+  startTime: z.coerce.date().optional(),
+  endTime: z.coerce.date().optional(),
+  allDay: z.boolean().optional(),
+  subject: z.string().nullable().optional(),
+  color: z.string().nullable().optional(),
+}).strict()
 
 export async function PUT(
   request: Request,
@@ -8,10 +19,18 @@ export async function PUT(
   const { id } = await params
   try {
     const body = await request.json()
-    const event = await db.calendarEvent.update({ where: { id }, data: body })
+    const data = EventUpdate.parse(body)
+    const event = await db.calendarEvent.update({ where: { id }, data })
     return NextResponse.json(event)
-  } catch {
-    return NextResponse.json({ error: "Event not found" }, { status: 404 })
+  } catch (e) {
+    if (e instanceof z.ZodError) {
+      return NextResponse.json({ error: "Invalid request body", issues: e.issues }, { status: 400 })
+    }
+    if (typeof e === "object" && e !== null && "code" in e && (e as { code: string }).code === "P2025") {
+      return NextResponse.json({ error: "Event not found" }, { status: 404 })
+    }
+    console.error("[PUT /api/calendar]", e)
+    return NextResponse.json({ error: "Internal error" }, { status: 500 })
   }
 }
 

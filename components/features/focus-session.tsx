@@ -23,10 +23,12 @@ export function FocusSession({ open, onClose }: FocusSessionProps) {
   const [running, setRunning] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const startTimeRef = useRef<string | null>(null)
+  const secondsLeftRef = useRef(25 * 60)
 
   const selectPreset = (minutes: number) => {
     setSelectedMinutes(minutes)
     setSecondsLeft(minutes * 60)
+    secondsLeftRef.current = minutes * 60
     setRunning(false)
     if (intervalRef.current) {
       clearInterval(intervalRef.current)
@@ -35,11 +37,16 @@ export function FocusSession({ open, onClose }: FocusSessionProps) {
   }
 
   const toggleRunning = useCallback(() => {
-    if (!running && !startTimeRef.current) {
-      startTimeRef.current = new Date().toISOString()
-    }
-    setRunning((r) => !r)
-  }, [running])
+    setRunning((r) => {
+      const next = !r
+      if (next && !startTimeRef.current) {
+        startTimeRef.current = new Date().toISOString()
+        secondsLeftRef.current = selectedMinutes * 60
+        setSecondsLeft(selectedMinutes * 60)
+      }
+      return next
+    })
+  }, [selectedMinutes])
 
   useEffect(() => {
     if (!running) {
@@ -50,26 +57,29 @@ export function FocusSession({ open, onClose }: FocusSessionProps) {
       return
     }
     intervalRef.current = setInterval(() => {
-      setSecondsLeft((s) => {
-        if (s <= 1) {
-          setRunning(false)
-          if (startTimeRef.current) {
-            fetch("/api/xp", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ source: "focus", amount: 40, reason: `${selectedMinutes}min focus session completed` }),
-            })
-            fetch("/api/focus-sessions", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ duration: selectedMinutes, startedAt: startTimeRef.current, completed: true }),
-            })
-            startTimeRef.current = null
-          }
-          return 0
-        }
-        return s - 1
-      })
+      secondsLeftRef.current = Math.max(secondsLeftRef.current - 1, 0)
+      setSecondsLeft(secondsLeftRef.current)
+      if (secondsLeftRef.current === 0 && startTimeRef.current) {
+        const startedAt = startTimeRef.current
+        startTimeRef.current = null
+        const minutes = selectedMinutes
+        setRunning(false)
+        fetch("/api/focus-sessions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ duration: minutes, startedAt, completed: true }),
+        }).catch(() => {})
+        fetch("/api/xp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            source: "focus",
+            amount: 40,
+            reason: `Focus session ${minutes}m`,
+            counterInc: minutes,
+          }),
+        }).catch(() => {})
+      }
     }, 1000)
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)

@@ -1,23 +1,38 @@
 import { NextResponse } from "next/server"
 import { db } from "@/lib/db"
+import { z } from "zod"
+
+const TaskCreate = z.object({
+  title: z.string().min(1),
+  description: z.string().nullable().optional(),
+  priority: z.enum(["low", "medium", "high"]).default("medium"),
+  status: z.enum(["todo", "in_progress", "done"]).default("todo"),
+  dueDate: z.coerce.date().nullable().optional(),
+  subject: z.string().nullable().optional(),
+  estimatedMinutes: z.number().int().positive().nullable().optional(),
+}).strict()
 
 export async function GET() {
-  const tasks = await db.task.findMany({ orderBy: { createdAt: "desc" } })
-  return NextResponse.json(tasks)
+  try {
+    const tasks = await db.task.findMany({ orderBy: { createdAt: "desc" } })
+    return NextResponse.json(tasks)
+  } catch (e) {
+    console.error("[GET /api/tasks]", e)
+    return NextResponse.json({ error: "Internal error" }, { status: 500 })
+  }
 }
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    if (!body.title?.trim()) {
-      return NextResponse.json({ error: "Title is required" }, { status: 400 })
-    }
-    if (body.priority && !["low", "medium", "high"].includes(body.priority)) {
-      return NextResponse.json({ error: "Priority must be low, medium, or high" }, { status: 400 })
-    }
-    const task = await db.task.create({ data: body })
+    const data = TaskCreate.parse(body)
+    const task = await db.task.create({ data })
     return NextResponse.json(task, { status: 201 })
-  } catch {
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
+  } catch (e) {
+    if (e instanceof z.ZodError) {
+      return NextResponse.json({ error: "Invalid request body", issues: e.issues }, { status: 400 })
+    }
+    console.error("[POST /api/tasks]", e)
+    return NextResponse.json({ error: "Internal error" }, { status: 500 })
   }
 }

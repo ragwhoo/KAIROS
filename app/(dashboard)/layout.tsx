@@ -42,7 +42,7 @@ export default function DashboardLayout({
   const pathname = usePathname()
 
   const { progress: mobileProgress } = useProgress()
-  const mobileXPInfo = mobileProgress ? getXPProgress(mobileProgress.xp) : { current: 0, required: 2000, percentage: 0 }
+  const mobileXPInfo = mobileProgress ? getXPProgress(mobileProgress.xp) : getXPProgress(0)
   const mobileRank = mobileProgress ? getRank(mobileProgress.level) : null
 
   const [isMobile, setIsMobile] = useState(

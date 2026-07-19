@@ -19,7 +19,7 @@ export default function OverviewPage() {
 
   const completedTasks = tasks.filter((t) => t.status === "done")
   const rank = progress ? getRank(progress.level) : null
-  const xpInfo = progress ? getXPProgress(progress.xp) : { current: 0, required: 2000, percentage: 0 }
+  const xpInfo = progress ? getXPProgress(progress.xp) : getXPProgress(0)
   const unlockedAchievements = achievements.filter((a) => a.unlockedAt)
 
   return (

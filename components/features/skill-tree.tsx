@@ -16,9 +16,9 @@ const colorMap: Record<string, string> = {
 
 export function SkillTree() {
   const { tasks } = useTasks()
-  const completedTasks = tasks.filter((t) => t.status === "done")
 
   const categoryData = useMemo(() => {
+    const completedTasks = tasks.filter((t) => t.status === "done")
     const counts = new Map<string, number>()
     for (const task of completedTasks) {
       const cat = task.subject ? classifySubject(task.subject) : "programming"
@@ -30,7 +30,7 @@ export function SkillTree() {
       count: counts.get(cat.key) ?? 0,
       percentage: Math.min(100, Math.floor(((counts.get(cat.key) ?? 0) / maxCount) * 100)),
     }))
-  }, [completedTasks])
+  }, [tasks])
 
   return (
     <div className="rounded-2xl bg-surface-1 border border-border p-5">

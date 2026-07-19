@@ -16,8 +16,13 @@ export async function DELETE() {
 }
 
 export async function GET() {
-  const messages = await db.chatMessage.findMany({ orderBy: { createdAt: "asc" } })
-  return NextResponse.json(messages)
+  try {
+    const messages = await db.chatMessage.findMany({ orderBy: { createdAt: "asc" } })
+    return NextResponse.json(messages)
+  } catch (e) {
+    console.error("[GET /api/chat]", e)
+    return NextResponse.json({ error: "Internal error" }, { status: 500 })
+  }
 }
 
 export async function PUT(request: Request) {
@@ -32,6 +37,11 @@ export async function PUT(request: Request) {
   } catch {
     return NextResponse.json({ error: "Failed to save message" }, { status: 500 })
   }
+}
+
+function parseDate(v: string): Date {
+  if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return new Date(v + "T00:00:00")
+  return new Date(v)
 }
 
 function extractText(part: unknown): string {
@@ -58,10 +68,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Too many requests. Try again in a minute." }, { status: 429, headers: { "X-RateLimit-Remaining": "0" } })
   }
 
-  try { await awardXP("chat", 15, "AI conversation") } catch {}
-
   const body = await request.json()
   const messages = toCoreMessages(body?.messages ?? [])
+  const hasUserMsg = messages.some((m) => m.role === "user")
+  if (!hasUserMsg) {
+    return NextResponse.json({ error: "No message to send" }, { status: 400 })
+  }
+
+  try { await awardXP("chat", 15, "AI conversation") } catch (e) { console.error("[API/chat] XP award failed:", e) }
 
   console.log("[API/chat] messages:", JSON.stringify(messages).slice(0, 200))
 
@@ -150,7 +164,7 @@ Be concise, friendly, and encouraging. Use a dark/premium aesthetic tone. Never 
               title,
               priority,
               subject: subject || null,
-              dueDate: dueDate ? new Date(dueDate) : null,
+              dueDate: dueDate ? parseDate(dueDate) : null,
               estimatedMinutes: estimatedMinutes || null,
               status: "todo",
             },

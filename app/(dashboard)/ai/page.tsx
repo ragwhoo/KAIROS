@@ -2,13 +2,13 @@
 
 import { useRef, useEffect, useState, useCallback } from "react"
 import gsap from "gsap"
-import Lenis from "lenis"
 import { Sparkles, User, Bookmark, Check } from "lucide-react"
 import { PageTransition } from "@/components/features/page-transition"
 import { useChatContext } from "@/components/features/chat-provider"
 import { useDashboardStore } from "@/store/use-dashboard-store"
 import { createNote } from "@/hooks/use-notes"
 import { cn } from "@/lib/utils"
+import { getMessageText, renderLinks } from "@/lib/chat-utils"
 
 const suggestions = [
   "Plan DBMS revision for my exam next week",
@@ -17,48 +17,8 @@ const suggestions = [
   "Help me prioritize my tasks",
 ]
 
-function getMessageText(parts: unknown[]): string {
-  if (!Array.isArray(parts)) return ""
-  return parts
-    .filter((p): p is { type: string; text: string } =>
-      typeof p === "object" && p !== null && "type" in p && (p as { type: string }).type === "text"
-    )
-    .map((p) => p.text)
-    .join("")
-}
-
-function renderLinks(text: string): React.ReactNode[] {
-  const linkRegex = /\[([^\]]+)\]\((\/[^)]+)\)/g
-  const parts: React.ReactNode[] = []
-  let lastIndex = 0
-  let match: RegExpExecArray | null
-
-  while ((match = linkRegex.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      parts.push(text.slice(lastIndex, match.index))
-    }
-    parts.push(
-      <a
-        key={match.index}
-        href={match[2]}
-        className="text-primary underline underline-offset-2 hover:text-primary-100 transition-colors"
-      >
-        {match[1]}
-      </a>
-    )
-    lastIndex = match.index + match[0].length
-  }
-
-  if (lastIndex < text.length) {
-    parts.push(text.slice(lastIndex))
-  }
-
-  return parts.length > 0 ? parts : [text]
-}
-
 export default function AIPage() {
   const scrollRef = useRef<HTMLDivElement>(null)
-  const lenisRef = useRef<Lenis | null>(null)
   const { messages, sendMessage, status } = useChatContext()
   const pendingChatMessage = useDashboardStore((s) => s.pendingChatMessage)
   const setPendingChatMessage = useDashboardStore((s) => s.setPendingChatMessage)
@@ -76,43 +36,16 @@ export default function AIPage() {
       .catch(() => {})
   }, [])
 
-  useEffect(() => {
-    if (!scrollRef.current) return
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      wrapper: scrollRef.current,
-      content: scrollRef.current.firstElementChild as HTMLElement,
-    })
-    lenisRef.current = lenis
-    let rafId: number
-    function raf(time: number) {
-      lenis.raf(time)
-      rafId = requestAnimationFrame(raf)
-    }
-    rafId = requestAnimationFrame(raf)
-    return () => {
-      cancelAnimationFrame(rafId)
-      lenis.destroy()
-      lenisRef.current = null
-    }
-  }, [])
-
   const scrollToBottom = useCallback(() => {
     if (!scrollRef.current) return
     const el = scrollRef.current
     const target = el.scrollHeight
-    if (lenisRef.current) {
-      lenisRef.current.scrollTo(target, { duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) })
-    } else {
-      gsap.to(el, {
-        scrollTop: target,
-        duration: 0.6,
-        ease: "power2.out",
-        overwrite: "auto",
-      })
-    }
+    gsap.to(el, {
+      scrollTop: target,
+      duration: 0.6,
+      ease: "power2.out",
+      overwrite: "auto",
+    })
   }, [])
 
   useEffect(() => {

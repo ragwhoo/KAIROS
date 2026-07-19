@@ -41,15 +41,11 @@ export async function checkAchievements() {
   for (const def of ACHIEVEMENT_DEFS) {
     if (unlockedKeys.has(def.key)) continue
     if (def.check(progress)) {
-      const existingRecord = existing.find((a) => a.key === def.key)
-      if (existingRecord) {
-        await db.achievement.update({
-          where: { id: existingRecord.id },
-          data: { unlockedAt: new Date() },
-        })
-      } else {
-        await db.achievement.create({
-          data: {
+      try {
+        await db.achievement.upsert({
+          where: { key: def.key },
+          update: { unlockedAt: new Date() },
+          create: {
             key: def.key,
             title: def.title,
             description: def.description,
@@ -57,6 +53,19 @@ export async function checkAchievements() {
             unlockedAt: new Date(),
           },
         })
+      } catch (err: unknown) {
+        const code =
+          typeof err === "object" && err !== null && "code" in err
+            ? (err as { code?: string }).code
+            : undefined
+        if (code === "P2002") {
+          // Already locked by a concurrent check — silently ignore
+        } else {
+          console.warn("[achievements] failed to upsert achievement", {
+            key: def.key,
+            error: err,
+          })
+        }
       }
       newlyUnlocked.push(def)
     }

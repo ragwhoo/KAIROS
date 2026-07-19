@@ -32,9 +32,10 @@ export function Sidebar() {
   const userInfoRef = useRef<HTMLDivElement>(null)
   const settingsRef = useRef<HTMLDivElement>(null)
   const xpBarRef = useRef<HTMLDivElement>(null)
+  const mountedRef = useRef(false)
 
   const { progress } = useProgress()
-  const xpInfo = progress ? getXPProgress(progress.xp) : { current: 0, required: 2000, percentage: 0 }
+  const xpInfo = progress ? getXPProgress(progress.xp) : getXPProgress(0)
   const rank = progress ? getRank(progress.level) : null
 
   const [isMobile, setIsMobile] = useState(
@@ -50,36 +51,35 @@ export function Sidebar() {
 
   useLayoutEffect(() => {
     const hidden = !sidebarOpen
-    gsap.set(brandTextRef.current, { opacity: hidden ? 0 : 1, x: hidden ? -10 : 0 })
-    gsap.set(closeBtnRef.current, { opacity: hidden ? 0 : 1, x: hidden ? 10 : 0 })
-    gsap.set(userInfoRef.current, { opacity: hidden ? 0 : 1, x: hidden ? 20 : 0 })
-    gsap.set(settingsRef.current, { opacity: hidden ? 0 : 1, x: hidden ? 20 : 0 })
-    gsap.set(xpBarRef.current, { opacity: hidden ? 0 : 1, height: hidden ? 0 : "auto", marginTop: hidden ? 0 : 12 })
-  }, [])
-
-  useLayoutEffect(() => {
-    if (!asideRef.current) return
-    gsap.to(asideRef.current, {
-      width: sidebarOpen ? 240 : 64,
-      duration: 0.4,
-      ease: "power3.out",
-    })
-  }, [sidebarOpen])
-
-  useLayoutEffect(() => {
-    if (sidebarOpen) {
-      gsap.to(brandTextRef.current, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" })
-      gsap.to(closeBtnRef.current, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out", delay: 0.05 })
-      gsap.to(userInfoRef.current, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out", delay: 0.1 })
-      gsap.to(settingsRef.current, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out", delay: 0.1 })
-      gsap.to(xpBarRef.current, { opacity: 1, height: "auto", marginTop: 12, duration: 0.3, ease: "power2.out", delay: 0.15 })
-    } else {
-      gsap.to(brandTextRef.current, { opacity: 0, x: -10, duration: 0.2, ease: "power2.in" })
-      gsap.to(closeBtnRef.current, { opacity: 0, x: 10, duration: 0.2, ease: "power2.in" })
-      gsap.to(xpBarRef.current, { opacity: 0, height: 0, marginTop: 0, duration: 0.2, ease: "power2.in" })
-      gsap.to(userInfoRef.current, { opacity: 0, x: 20, duration: 0.2, ease: "power2.in", delay: 0.05 })
-      gsap.to(settingsRef.current, { opacity: 0, x: 20, duration: 0.2, ease: "power2.in", delay: 0.05 })
+    const setOrTo = (target: HTMLElement | null, props: gsap.TweenVars, delay?: number) => {
+      if (!target) return
+      if (mountedRef.current) {
+        gsap.to(target, { ...props, duration: 0.3, ease: "power2.out", delay, overwrite: "auto" })
+      } else {
+        gsap.set(target, props)
+      }
     }
+
+    if (asideRef.current) {
+      if (mountedRef.current) {
+        gsap.to(asideRef.current, {
+          width: sidebarOpen ? 240 : 64,
+          duration: 0.4,
+          ease: "power3.out",
+          overwrite: "auto",
+        })
+      } else {
+        gsap.set(asideRef.current, { width: sidebarOpen ? 240 : 64 })
+      }
+    }
+
+    setOrTo(brandTextRef.current, { opacity: hidden ? 0 : 1, x: hidden ? -10 : 0 })
+    setOrTo(closeBtnRef.current, { opacity: hidden ? 0 : 1, x: hidden ? 10 : 0 }, 0.05)
+    setOrTo(userInfoRef.current, { opacity: hidden ? 0 : 1, x: hidden ? 20 : 0 }, 0.1)
+    setOrTo(settingsRef.current, { opacity: hidden ? 0 : 1, x: hidden ? 20 : 0 }, 0.1)
+    setOrTo(xpBarRef.current, { opacity: hidden ? 0 : 1, height: hidden ? 0 : "auto", marginTop: hidden ? 0 : 12 }, 0.15)
+
+    mountedRef.current = true
   }, [sidebarOpen])
 
   if (isMobile) return null

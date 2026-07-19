@@ -30,7 +30,12 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     },
   })
 
-  return <ChatContext.Provider value={chat}>{children}</ChatContext.Provider>
+  const value = useMemo(
+    () => chat,
+    [chat.messages, chat.status, chat.sendMessage, chat.error]
+  )
+
+  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>
 }
 
 export function useChatContext(): ChatState {

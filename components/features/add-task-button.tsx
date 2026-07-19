@@ -20,7 +20,7 @@ export function AddTaskButton({ onMutate }: { onMutate?: () => void }) {
       title: title.trim(),
       priority,
       subject: subject.trim() || null,
-      dueDate: dueDate ? new Date(dueDate).toISOString() : null,
+      dueDate: dueDate ? new Date(`${dueDate}T00:00:00`).toISOString() : null,
       status: "todo",
     })
     setTitle("")

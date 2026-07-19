@@ -1,20 +1,38 @@
 import { NextResponse } from "next/server"
 import { db } from "@/lib/db"
+import { z } from "zod"
+
+const EventCreate = z.object({
+  title: z.string().min(1),
+  description: z.string().nullable().optional(),
+  startTime: z.coerce.date(),
+  endTime: z.coerce.date(),
+  allDay: z.boolean().optional(),
+  subject: z.string().nullable().optional(),
+  color: z.string().nullable().optional(),
+}).strict()
 
 export async function GET() {
-  const events = await db.calendarEvent.findMany({ orderBy: { startTime: "asc" } })
-  return NextResponse.json(events)
+  try {
+    const events = await db.calendarEvent.findMany({ orderBy: { startTime: "asc" } })
+    return NextResponse.json(events)
+  } catch (e) {
+    console.error("[GET /api/calendar]", e)
+    return NextResponse.json({ error: "Internal error" }, { status: 500 })
+  }
 }
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    if (!body.title?.trim()) {
-      return NextResponse.json({ error: "Title is required" }, { status: 400 })
-    }
-    const event = await db.calendarEvent.create({ data: body })
+    const data = EventCreate.parse(body)
+    const event = await db.calendarEvent.create({ data })
     return NextResponse.json(event, { status: 201 })
-  } catch {
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
+  } catch (e) {
+    if (e instanceof z.ZodError) {
+      return NextResponse.json({ error: "Invalid request body", issues: e.issues }, { status: 400 })
+    }
+    console.error("[POST /api/calendar]", e)
+    return NextResponse.json({ error: "Internal error" }, { status: 500 })
   }
 }

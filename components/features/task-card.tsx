@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import { motion } from "framer-motion"
 import gsap from "gsap"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -40,12 +40,12 @@ function formatDueDate(dueDate: string | null): { text?: string; urgent?: boolea
 }
 
 export function TaskCard({ task, onMutate }: TaskCardProps) {
-  const [isCompleted, setIsCompleted] = useState(task.status === "done")
   const cardRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
   const isAnimatingRef = useRef(false)
   const { accent, badge, label } = getPriorityMeta(task.priority, task.status)
   const due = formatDueDate(task.dueDate)
+  const isCompleted = task.status === "done"
 
   const handleToggle = async () => {
     if (isAnimatingRef.current) return
@@ -53,7 +53,6 @@ export function TaskCard({ task, onMutate }: TaskCardProps) {
 
     if (newStatus === "done") {
       isAnimatingRef.current = true
-      setIsCompleted(true)
 
       const tl = gsap.timeline({
         onComplete: () => {
@@ -79,7 +78,6 @@ export function TaskCard({ task, onMutate }: TaskCardProps) {
           triggerXP(xpAmount, cardRef.current)
         })
     } else {
-      setIsCompleted(false)
       await updateTask(task.id, {
         status: newStatus,
         completedAt: null,
