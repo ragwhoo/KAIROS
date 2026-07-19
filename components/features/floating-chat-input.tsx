@@ -37,10 +37,13 @@ export function FloatingChatInput() {
 
     recognition.onresult = (event: any) => {
       setMicStatus("listening")
-      const transcript = Array.from(event.results)
-        .map((r: any) => r[0].transcript)
-        .join("")
-      if (transcript) setInput(transcript)
+      let append = ""
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          append += event.results[i][0].transcript
+        }
+      }
+      if (append) setInput((prev) => prev + append)
     }
 
     recognition.onerror = (event: any) => {
